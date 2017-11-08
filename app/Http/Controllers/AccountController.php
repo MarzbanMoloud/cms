@@ -28,11 +28,14 @@ class AccountController extends Controller
 
     public function login()
     {
-        if(!auth()->attempt(request(['email','password'])))
-        {
-            return back();
+        $isUser = User::where('email' , \request('email'))
+                      ->where('password' , \request('password'))
+                      ->first();
+        if($isUser != ''){
+            auth()->login($isUser);
+            return redirect()->home();
         }
-        return redirect()->home();
+        return redirect()->back();
     }
 
 
