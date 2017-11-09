@@ -61,9 +61,9 @@
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu" style="text-align: right;">
-                                    @if(Auth::user()->admin == 1)
+                                    @if(Auth::user()->admin == 0)
                                         <li>
-                                            <a href="#">پنل مدیریت</a>
+                                            <a href="{{ route('category') }}">پنل مدیریت</a>
                                         </li>
                                     @else
                                         <li>
