@@ -14,3 +14,7 @@ Route::post('addCat','AdminController@addCat')->name('addCat');
 Route::get('editCat/{category}', 'AdminController@editCat')->name('editCat');
 Route::post('updateCat/{category}', 'AdminController@updateCat')->name('updateCat');
 Route::get('deleteCat/{category}','AdminController@deleteCat')->name('deleteCat');
+
+
+Route::get('post', 'AdminController@post')->name('post');
+Route::post('addPost', 'AdminController@addPost')->name('addPost');

@@ -27,7 +27,7 @@
             <li><a href="#"> خروج</a></li>
             <li><a href="{{ route('category') }}">مدیریت دسته بندی</a></li>
             <li><a href="#">مدیریت محصولات</a></li>
-            <li><a href="#"> افزودن محصول</a></li>
+            <li><a href="{{ route('post') }}"> افزودن محصول</a></li>
             <li class="active"><a href="#">داشبورد</a></li>
         </ul>
     </div>
