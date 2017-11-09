@@ -70,4 +70,39 @@ class AdminController extends Controller
         Product::create(['category_id' => $request->cat , 'discount_id' => $request->discount, 'title' => $request->title, 'price' => $request->price,'photo' => $path, 'quantity' => $request->quantity, 'detail' => $request->detail]);
         return back();
     }
+
+    public function postList()
+    {
+        $products = Product::paginate(10);
+        return view('admin.product-list', ['products' => $products]);
+    }
+
+    public function deletePost(Product $product)
+    {
+        $product->delete();
+        return redirect()->back();
+    }
+
+    public function editPost(Product $product)
+    {
+        $modify = 1;
+        $categories = Category::all();
+        $discounts = Discount::all();
+        return view('admin.product', ['product' => $product,'categories' => $categories, 'discounts' => $discounts, 'modify' => $modify]);
+    }
+
+    public function updatePost(Product $product , Request $request)
+    {
+        if ($request->hasFile('image')) {
+            if (is_file($product->photo)) {
+                unlink(public_path() . '/' . $product->photo);
+            }
+            $file = $request->file('image');
+            $name = time() . '-' . $file->getClientOriginalName();
+            $file->move('photos', $name);
+            $path = "/photos/" . $name;
+            $product->update(['discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $request->price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail]);
+            return redirect()->back();
+        }
+    }
 }

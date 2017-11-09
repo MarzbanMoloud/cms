@@ -3,13 +3,13 @@
 
     <hr>
         <div class="well">
-            <form role="form" action="{{$modify==1 ? route('update_product',['product'=>$product->id]) : route('addPost')}}" method="post" enctype="multipart/form-data">
+            <form role="form" action="{{$modify==1 ? route('updatePost',['product'=>$product->id]) : route('addPost')}}" method="post" enctype="multipart/form-data">
                 {{csrf_field()}}
                 <div class="form-group center">
                     <label for="cat" class="control-label"> دسته بندی ها</label>
                     <select name="cat" class="form-control " id="cat">
                         @foreach($categories as $category)
-                            <option value="{{$category->id }}" {{($modify==1 and $category->id==$product->$category_id) ? 'selected' : ''}}> {{ $category->catName }} </option>
+                            <option value="{{$category->id }}" {{($modify==1 and $category->id==$product->category_id) ? 'selected' : ''}}> {{ $category->catName }} </option>
                         @endforeach
                     </select>
                     <label for="discount" class="control-label"> تخفیف</label>
