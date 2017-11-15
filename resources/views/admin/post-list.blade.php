@@ -2,7 +2,7 @@
 @section('title','پست ها')
 @section('content')
 
-    <h3>لیست محصولات</h3>
+    <h3>لیست پست ها</h3>
     <div class="well">
         <table class="table table-striped table-condensed table-hover">
             <tr>
