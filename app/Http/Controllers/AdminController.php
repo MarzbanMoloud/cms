@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 use App\Category;
 use App\Discount;
-use App\Http\Requests\ProductRequest;
-use App\Product;
+use App\Http\Requests\PostRequest;
+use App\Page;
+use App\Post;
+use App\Type;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -16,7 +18,7 @@ class AdminController extends Controller
         $categories = Category::all();
         return view('admin.category' , ['categories' => $categories , 'modify' => $modify]);
     }
-
+    //Add category
     public function addCat(Request $request)
     {
         $modify = 0;
@@ -28,14 +30,14 @@ class AdminController extends Controller
         $categories = Category::all();
         return view('admin.category' , ['categories' => $categories , 'modify' => $modify]);
     }
-
+    //pass to edit
     public function editCat(Category $category)
     {
         $modify = 1;
         $categories = Category::all();
         return view('admin.category' , ['category' => $category , 'categories' => $categories , 'modify' => $modify]);
     }
-
+    //update category
     public function updateCat(Category $category , Request $request)
     {
         $this->validate(request(),
@@ -45,7 +47,7 @@ class AdminController extends Controller
         $category->update(['catName' => $request->cat]);
         return redirect()->back();
     }
-
+    //delete category
     public function deleteCat(Category $category)
     {
         $category->delete();
@@ -58,51 +60,92 @@ class AdminController extends Controller
         $categories = Category::all();
         $discounts = Discount::all();
         $modify = 0;
-        return view('admin.product', ['categories' => $categories, 'discounts' => $discounts, 'modify' => $modify]);
+        return view('admin.post', ['categories' => $categories, 'discounts' => $discounts, 'modify' => $modify]);
     }
-
-    public function addPost(ProductRequest $request)
+    //Add post
+    public function addPost(PostRequest $request)
     {
         $file = $request->file('image');
         $name = time() . '-' . $file->getClientOriginalName();
         $file->move('photos', $name);
         $path = "/photos/" . $name;
-        Product::create(['category_id' => $request->cat , 'discount_id' => $request->discount, 'title' => $request->title, 'price' => $request->price,'photo' => $path, 'quantity' => $request->quantity, 'detail' => $request->detail]);
+        Post::create(['category_id' => $request->cat , 'discount_id' => $request->discount, 'title' => $request->title, 'price' => $request->price,'photo' => $path, 'quantity' => $request->quantity, 'detail' => $request->detail]);
         return back();
     }
-
+    //Show post list = managment post
     public function postList()
     {
-        $products = Product::paginate(10);
-        return view('admin.product-list', ['products' => $products]);
+        $posts = Post::paginate(10);
+        return view('admin.post-list', ['posts' => $posts]);
     }
-
-    public function deletePost(Product $product)
+    //Delete post
+    public function deletePost(Post $post)
     {
-        $product->delete();
+        $post->delete();
         return redirect()->back();
     }
-
-    public function editPost(Product $product)
+    //Pass to edit
+    public function editPost(Post $post)
     {
         $modify = 1;
         $categories = Category::all();
         $discounts = Discount::all();
-        return view('admin.product', ['product' => $product,'categories' => $categories, 'discounts' => $discounts, 'modify' => $modify]);
+        return view('admin.post', ['post' => $post,'categories' => $categories, 'discounts' => $discounts, 'modify' => $modify]);
     }
-
-    public function updatePost(Product $product , Request $request)
+    //Update post
+    public function updatePost(Post $post , Request $request)
     {
-        if ($request->hasFile('image')) {
-            if (is_file($product->photo)) {
-                unlink(public_path() . '/' . $product->photo);
+        if ($request->hasFile('image'))
+        {
+            if (is_file($post->photo))
+            {
+                unlink(public_path() . '/' . $post->photo);
             }
             $file = $request->file('image');
             $name = time() . '-' . $file->getClientOriginalName();
             $file->move('photos', $name);
             $path = "/photos/" . $name;
-            $product->update(['discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $request->price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail]);
+            $post->update(['discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $request->price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail]);
             return redirect()->back();
         }
+    }
+
+    //Page
+    public function page()
+    {
+        $modify = 0;
+        $typs = Type::all();
+        return view('admin.page' , ['types' => $typs , 'modify' => $modify]);
+    }
+    //Add page
+    public function addPage()
+    {
+        Page::create(['type_id' => $_POST['type'] ,'title' => $_POST['title'] , 'body' => $_POST['ckeditor'] ]);
+        return redirect()->back();
+    }
+    //Show page list = managment page
+    public function pageList()
+    {
+        $pages = Page::paginate(10);
+        return view('admin.page-list', ['pages' => $pages]);
+    }
+    //Delete page
+    public function deletePage(Page $page)
+    {
+        $page->delete();
+        return redirect()->back();
+    }
+    //Pass to edit
+    public function editPage(Page $page)
+    {
+        $modify = 1;
+        $types = Type::all();
+        return view('admin.page', ['page' => $page , 'types' => $types , 'modify' => $modify]);
+    }
+    //Update page
+    public function updatePage(Page $page , Request $request)
+    {
+        $page->update(['type_id' => $request->type , 'title' => $request->title , 'body' => $request->ckeditor]);
+        return redirect()->back();
     }
 }

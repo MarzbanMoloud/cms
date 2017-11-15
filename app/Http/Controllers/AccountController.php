@@ -9,11 +9,12 @@ use Illuminate\Support\Facades\Hash;
 
 class AccountController extends Controller
 {
+    //Show login and register form
     public function index()
     {
         return view('login');
     }
-
+    //Register data form
     public function register(Request $request)
     {
         $this->validate(request(),
@@ -32,7 +33,7 @@ class AccountController extends Controller
         auth()->login($user);
         return redirect()->home();
     }
-
+    //Do login
     public function login()
     {
         if (!Auth::attempt(request(['email','password']))) {
@@ -40,8 +41,7 @@ class AccountController extends Controller
         }
         return redirect()->home();
     }
-
-
+    //Log out
     public function destroy()
     {
         auth()->logout();

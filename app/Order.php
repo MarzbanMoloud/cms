@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 class Order extends Model
 {
     protected $fillable=['user_id','product_id','totalPrice','qty','trackingCode'];
-    public function product()
+    public function post()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Post::class);
     }
 
     public function user()

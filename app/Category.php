@@ -9,7 +9,7 @@ class Category extends Model
     protected $fillable = [
         'catName'
     ];
-    public function products(){
-        return $this->hasMany(Product::class);
+    public function posts(){
+        return $this->hasMany(Post::class);
     }
 }

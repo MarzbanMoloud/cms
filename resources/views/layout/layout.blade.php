@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Home | E-Shopper</title>
+    <title>E-Shopper</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link href="css/prettyPhoto.css" rel="stylesheet">
@@ -22,6 +22,7 @@
     <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/ico/apple-touch-icon-114-precomposed.png">
     <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/ico/apple-touch-icon-72-precomposed.png">
     <link rel="apple-touch-icon-precomposed" href="images/ico/apple-touch-icon-57-precomposed.png">
+
     <style>
         .right-text-input
         {
@@ -61,9 +62,9 @@
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu" style="text-align: right;">
-                                    @if(Auth::user()->admin == 0)
+                                    @if(Auth::user()->admin == 1)
                                         <li>
-                                            <a href="{{ route('category') }}">پنل مدیریت</a>
+                                            <a href="{{ route('category') }}" target="_blank">پنل مدیریت</a>
                                         </li>
                                     @else
                                         <li>
@@ -85,9 +86,12 @@
                 <div class="col-sm-8">
                     <div class="shop-menu pull-right">
                         <ul class="nav navbar-nav">
-
-                            <li><a href="#">درباره ما</a></li>
-                            <li><a href="contact-us.html">تماس با ما</a></li>
+                            @if(isset($pages) and $pages != '')
+                            @foreach($pages as $page)
+                                    <li><a href="{{ route('showPage' , ['title' => $page->title]) }}">{{ $page->title }}</a></li>
+                                @endforeach
+                            @endif
+                            <li><a href="{{ route('contactUs') }}">تماس با ما</a></li>
                             <li><a href="{{ route('account') }}"><i class="fa fa-lock"></i> ورود</a></li>
                             <li><a href="cart.html"><i class="fa fa-shopping-cart"></i> سبد خرید</a></li>
                             <li><a href="{{ route('home') }}" class="active">خانه</a></li>

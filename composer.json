@@ -6,8 +6,11 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "ckeditor/ckeditor": "^4.7",
         "laravel/framework": "5.4.*",
-        "laravel/tinker": "~1.0"
+        "laravel/tinker": "~1.0",
+        "laravelcollective/html": "^5.4",
+        "unisharp/laravel-ckeditor": "^4.6"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
