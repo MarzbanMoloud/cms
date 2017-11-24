@@ -1,4 +1,5 @@
 @extends('layout.adminLayout')
+@section('title' , 'داشبورد')
 @section('content')
 
 <!-- Default box -->

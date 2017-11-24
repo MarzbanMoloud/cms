@@ -1,4 +1,5 @@
 @extends('layout.adminLayout')
+@section('title' , 'لیست کاربران')
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -33,7 +34,7 @@
                                 <td>{{ $user->lname }}</td>
                                 <td>{{ $user->national_code }}</td>
                                 <td>{{ $user->username }}</td>
-                                <td>گروه</td>
+                                <td>{{ $user->role->role }}</td>
                                 <td>
                                     <a href="{{ route('removeUser' , ['user' => $user->id]) }}"><i class="fa fa-remove"></i></a>
                                 </td>

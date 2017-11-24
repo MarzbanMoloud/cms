@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>AdminLTE 2 | Blank Page</title>
+    <title>@yield('title')</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <!-- Bootstrap 3.3.7 -->
@@ -279,7 +279,7 @@
                     <ul class="treeview-menu">
                         <li><a href="{{ route('userList') }}"><i class="fa fa-circle-o"></i> لیست کاربران</a></li>
                         <li><a href="{{ route('user') }}"><i class="fa fa-circle-o"></i> ایجاد کاربر</a></li>
-                        <li><a href="#"><i class="fa fa-circle-o"></i> مجوزها</a></li>
+                        <li><a href="{{ route('promote') }}"><i class="fa fa-circle-o"></i> مجوزها</a></li>
                     </ul>
                 </li>
 

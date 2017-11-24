@@ -1,4 +1,5 @@
 @extends('layout.adminLayout')
+@section('title' , 'لیست صفحات')
 @section('content')
     <div class="row">
         <div class="col-md-12">
