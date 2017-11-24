@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
         view()->composer('layout.layout', function($view)
         {
-            $pages = Page::all();
+            $pages = Page::where('published' , '1')->get();
             $view->with('pages', $pages);
         });
     }

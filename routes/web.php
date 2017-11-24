@@ -1,20 +1,21 @@
 <?php
-
-
 Route::get('/' , 'HomeController@index')->name('home');
-Route::get('/aboutUs' , 'HomeController@aboutUs')->name('aboutUs');
+Route::get('aboutUs' , 'HomeController@aboutUs')->name('aboutUs');
 Route::get('account' , 'AccountController@index')->name('account');
 Route::post('addCat','AdminController@addCat')->name('addCat');
 Route::post('addPage', 'AdminController@addPage')->name('addPage');
 Route::post('addPost', 'AdminController@addPost')->name('addPost');
+Route::post('addUser', 'AdminController@addUser')->name('addUser');
 Route::get('category','AdminController@category')->name('category');
-Route::get('/contactUs' , 'HomeController@contactUs')->name('contactUs');
+Route::get('contactUs' , 'HomeController@contactUs')->name('contactUs');
+Route::get('dashboard' , 'AdminController@dashboard')->name('dashboard');
 Route::get('deleteCat/{category}','AdminController@deleteCat')->name('deleteCat');
 Route::get('deletePage/{page}', 'AdminController@deletePage')->name('deletePage');
 Route::get('deletePost/{post}', 'AdminController@deletePost')->name('deletePost');
 Route::get('editCat/{category}', 'AdminController@editCat')->name('editCat');
 Route::get('editPage/{page}', 'AdminController@editPage')->name('editPage');
 Route::get('editPost/{post}', 'AdminController@editPost')->name('editPost');
+Route::get('editUser/{user}', 'AdminController@editUser')->name('editUser');
 Route::post('login' , 'AccountController@login')->name('login');
 Route::get('logout','AccountController@destroy')->name('logout');
 Route::get('page', 'AdminController@page')->name('page');
@@ -22,8 +23,14 @@ Route::get('pageList', 'AdminController@pageList')->name('pageList');
 Route::get('post', 'AdminController@post')->name('post');
 Route::get('postList', 'AdminController@postList')->name('postList');
 Route::post('register' , 'AccountController@register')->name('register');
+Route::get('removeUser/{user}' , 'AdminController@removeUser')->name('removeUser');
+Route::post('statusUser/{user}' , 'AdminController@statusUser')->name('statusUser');
+Route::post('uniqueCode', 'AccountController@uniqueCode')->name('uniqueCode');
 Route::post('updateCat/{category}', 'AdminController@updateCat')->name('updateCat');
 Route::post('updatePage/{page}', 'AdminController@updatePage')->name('updatePage');
 Route::post('updatePost/{post}', 'AdminController@updatePost')->name('updatePost');
+Route::post('updateUser/{user}', 'AdminController@updateUser')->name('updateUser');
+Route::get('user' , 'AdminController@user')->name('user');
+Route::get('userList' , 'AdminController@userList')->name('userList');
 Route::get('/{title}' , 'HomeController@showPage')->name('showPage');
 

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     protected $fillable = [
-        'category_id', 'discount_id', 'group_id', 'title','detail','quantity','price','photo'
+        'category_id', 'discount_id', 'group_id', 'title','detail','quantity','price','photo','published'
     ];
     public function orders()
     {
@@ -22,5 +22,10 @@ class Post extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

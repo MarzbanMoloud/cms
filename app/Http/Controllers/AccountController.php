@@ -19,24 +19,44 @@ class AccountController extends Controller
     {
         $this->validate(request(),
             [
-                'name' => 'required',
-                'email' => 'required|email',
+                'fname' => 'required',
+                'lname' => 'required',
+                'phone' => 'required',
+                'national_code' => 'required',
+                'username' => 'required',
                 'password' => 'required|confirmed'
             ]);
 
         $hashedPassword = Hash::make(request('password'));
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $hashedPassword
+            'role_id' => 1 ,
+            'fname' => $request->fname,
+            'lname' => $request->lname,
+            'phone' => $request->phone,
+            'national_code' => $request->national_code,
+            'username' => $request->username,
+            'password' => $hashedPassword,
+            'status' => '0',
         ]);
         auth()->login($user);
         return redirect()->home();
     }
+
+    public function uniqueCode(Request $request)
+    {
+        $national_code = $request->input('national_code', '');
+        $uniqueCode = User::where('national_code',$national_code)->first();
+        if ($uniqueCode == null)
+        {
+            return json_encode(false);
+        }
+        return json_encode(true);
+    }
+
     //Do login
     public function login()
     {
-        if (!Auth::attempt(request(['email','password']))) {
+        if (!Auth::attempt(request(['username','password']))) {
             return back();
         }
         return redirect()->home();

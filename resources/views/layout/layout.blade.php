@@ -32,6 +32,9 @@
         .error {
             color: red;
         }
+        body{
+            font-family: "B Yekan Regular";
+        }
     </style>
 </head><!--/head-->
 
@@ -58,13 +61,13 @@
                             <li class="dropdown">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                                    aria-expanded="false">
-                                    {{ Auth::user()->name }} <span class="caret"></span>
+                                    {{ Auth::user()->username }} <span class="caret"></span>
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu" style="text-align: right;">
-                                    @if(Auth::user()->admin == 1)
+                                    @if(Auth::user()->role_id == 1)
                                         <li>
-                                            <a href="{{ route('category') }}" target="_blank">پنل مدیریت</a>
+                                            <a href="{{ route('dashboard') }}" target="_blank">پنل مدیریت</a>
                                         </li>
                                     @else
                                         <li>

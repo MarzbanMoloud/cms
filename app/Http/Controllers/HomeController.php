@@ -13,7 +13,7 @@ class HomeController extends Controller
     public function index()
     {
         $categories = Category::all();
-        $products = Post::paginate(9);
+        $products = Post::where('published' , '1')->paginate(9);
         return view('index' , ['categories' => $categories , 'products' => $products]);
     }
 

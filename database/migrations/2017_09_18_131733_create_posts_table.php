@@ -15,6 +15,8 @@ class CreatePostsTable extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id')->unsigned()->index();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('discount_id')->unsigned()->index();
             $table->foreign('discount_id')->references('id')->on('discounts')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('category_id')->unsigned()->index();
@@ -24,6 +26,7 @@ class CreatePostsTable extends Migration
             $table->string('photo');
             $table->integer('quantity');
             $table->text('detail');
+            $table->integer('published');
             $table->timestamps();
             });
     }

@@ -11,7 +11,8 @@
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4",
         "tsawler/laravel-filemanager": "^0.6.2",
-        "unisharp/laravel-ckeditor": "^4.6"
+        "unisharp/laravel-ckeditor": "^4.6",
+        "unisharp/laravel-filemanager": "~1.8"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
