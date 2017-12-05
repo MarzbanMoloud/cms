@@ -73,7 +73,7 @@ abstract class RestSerializer
         $opts = [];
         $input = $operation->getInput();
 
-        // Apply the payload trait if present
+        // Apply the payload Traits if present
         if ($payload = $input['payload']) {
             $this->applyPayload($input, $payload, $args, $opts);
         }

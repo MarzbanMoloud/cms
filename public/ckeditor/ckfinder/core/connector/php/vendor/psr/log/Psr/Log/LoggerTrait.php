@@ -3,7 +3,7 @@
 namespace Psr\Log;
 
 /**
- * This is a simple Logger trait that classes unable to extend AbstractLogger
+ * This is a simple Logger Traits that classes unable to extend AbstractLogger
  * (because they extend another class, etc) can include.
  *
  * It simply delegates all log-level-specific methods to the `log` method to

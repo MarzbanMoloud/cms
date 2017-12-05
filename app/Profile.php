@@ -6,8 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Profile extends Model
 {
+    protected $fillable = [
+        'user_id' , 'job' , 'education' , 'mail' , 'address' , 'avatar' , 'detail'
+    ];
     public function user()
     {
-        return $this->hasMany(User::class);
+        return $this->belongsTo(User::class);
     }
 }

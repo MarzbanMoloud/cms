@@ -13,83 +13,75 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body pad">
-                <form role="form" action="{{$modify==1 ? route('updatePost',['post'=>$post->id]) : route('addPost')}}" method="post" enctype="multipart/form-data">
-                        {{ csrf_field() }}
+                    {!! Form::open(['url' => ($_SERVER['REQUEST_URI'])  ,  'method' => 'POST' , 'role' => 'form' , 'enctype' => 'multipart/form-data']) !!}
+                    {{ Form::token() }}
+
                         <div class="form-group">
-                            <label for="cat">دسته بندی</label>
-                            <select class="form-control select2" name="cat" id="cat">
-                                @foreach($categories as $category)
-                                    <option value="{{$category->id }}" {{($modify==1 and $category->id==$post->category_id) ? 'selected' : ''}}> {{ $category->catName }} </option>
-                                @endforeach
-                            </select>
+                            {{ Form::label('cat', ' دسته بندی') }}
+                            {{ Form::select('cat' , $categories , null ,['class' => 'form-control'])  }}
                         </div>
 
                         <div class="form-group">
-                            <label for="discount">تخفیف</label>
-                            <select class="form-control select2" name="discount" id="discount">
-                                @foreach($discounts as $discount)
-                                    <option value="{{ $discount->id }}" {{($modify==1 and $discount->id==$post->discount_id) ? 'selected' : ''}}> {{ $discount->discountPercent }} </option>
-                                @endforeach
-                            </select>
+                            {{ Form::label('discount', 'تخفیف') }}
+                            {{  Form::select('discount' , $discounts , null ,['class' => 'form-control']) }}
                         </div>
 
-                        <div class="form-group">
-                            <label for="tite">عنوان پست</label>
-                            <input type="text" class="form-control" id="title"  name="title" value="{{$modify==1 ? $post->title : old('title')}}">
-                        </div>
                         @if ($errors->has('title'))
                             <span class="help-block error">
-                            <strong>{{ $errors->first('title') }}</strong>
-                        </span>
+                                <strong>{{ $errors->first('title') }}</strong>
+                            </span>
                         @endif
-
                         <div class="form-group">
-                            <label for="price">قیمت</label>
-                            <input type="text" class="form-control" id="price" name="price" value="{{$modify==1 ? $post->price : old('price')}}">
+                            {{ Form::label('title', 'عنوان') }}
+                            {{ Form::text('title', ($post)? $post->title : ''  , ['class' => 'form-control' , 'id' => 'title']) }}
+                            <div id="error-title" data-title="My tooltip"  class="hidden pointer_tooltip">حروف فارسی</div>
                         </div>
+
                         @if ($errors->has('price'))
                             <span class="help-block error">
-                            <strong>{{ $errors->first('price') }}</strong>
-                        </span>
+                                <strong>{{ $errors->first('price') }}</strong>
+                            </span>
                         @endif
-
                         <div class="form-group">
-                            <label for="quantity">تعداد</label>
-                            <input type="text" class="form-control" id="quantity" name="quantity" value="{{$modify==1 ? $post->quantity : old('quantity')}}">
+                            {{ Form::label('price', 'قیمت') }}
+                            {{ Form::text('price', ($post)? $post->price : ''  , ['class' => 'form-control' , 'id' => 'price']) }}
+                            <div id="error-price" data-title="My tooltip"  class="hidden pointer_tooltip">فقط عدد</div>
                         </div>
+
                         @if ($errors->has('quantity'))
                             <span class="help-block error">
-                            <strong>{{ $errors->first('quantity') }}</strong>
-                        </span>
+                                <strong>{{ $errors->first('quantity') }}</strong>
+                            </span>
                         @endif
-
                         <div class="form-group">
-                            <label for="image">تصویر شاخص</label>
-                            <input type="file" id="image" name="image">
+                            {{ Form::label('quantity', 'تعداد') }}
+                            {{ Form::text('quantity', ($post)? $post->quantity : ''  , ['class' => 'form-control' , 'id' => 'quantity']) }}
+                            <div id="error-qty" data-title="My tooltip"  class="hidden pointer_tooltip">فقط عدد</div>
                         </div>
-                        @if ($errors->has('image'))
-                            <span class="help-block error">
-                            <strong>{{ $errors->first('image') }}</strong>
-                        </span>
-                        @endif
 
                         <div class="form-group">
-                            <label for="detail">توضیحات</label>
-                            <textarea class="form-control" id="detail" name="detail" rows="7">
-                            {{$modify==1 ? $post->detail : old('detail')}}
+                            {{ Form::label('image', 'تصویر شاخص') }}
+                            {{ Form::file('image') }}
+                        </div>
+
+                        @if ($errors->has('detail'))
+                            <span class="help-block error" >
+                                <strong>{{ $errors->first('detail') }}</strong>
+                            </span>
+                        @endif
+                        <div class="form-group">
+                            {{ Form::label('detail', 'توضیحات') }}
+                            {{ Form::textarea('detail', ($post)? $post->detail : '' , ['size' => '30x5' , 'class' => 'form-control']) }}
                         </textarea>
                         </div>
-                        @if ($errors->has('detail'))
-                            <span class="help-block error">
-                            <strong>{{ $errors->first('detail') }}</strong>
-                        </span>
-                        @endif
 
                         <div class="box-footer">
-                            <input type="submit" class="btn btn-primary" name="draft" value="پیش نویس" />
-                            <input type="submit" class="btn btn-primary" name="publish" value="انتشار" />
+                            {{ Form::submit(' پیش نویس' , ['class' => 'btn btn-primary' , 'name' => 'draft']) }}
+                            @if($publish_posts == 1)
+                                {{ Form::submit('انتشار', ['class' => 'btn btn-primary' , 'name' => 'publish']) }}
+                            @endif
                         </div>
-                </form>
+                    {!! Form::close() !!}
             </div>
         </div>
             <!-- /.box -->
@@ -97,4 +89,47 @@
         <!-- /.col-->
 </div>
     <!-- ./row -->
+
+    <script>
+        $("#title").on('change keyup paste keydown', function(e) {
+            var p = /^[\u0600-\u06FF\s]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    $('#error-title').removeClass('hidden');}
+                else {
+                    $('#title').attr({ maxLength : 30 });
+                    $('#error-title').addClass('hidden');
+                }
+            }
+        });
+    </script>
+    <script>
+        $("#price").on('change keyup paste keydown', function(e) {
+            var p = /^[0-9]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    $('#error-price').removeClass('hidden');}
+                else {
+                    $('#price').attr({ maxLength : 9 });
+                    $('#error-price').addClass('hidden');
+                }
+            }
+        });
+    </script>
+    <script>
+        $("#quantity").on('change keyup paste keydown', function(e) {
+            var p = /^[0-9]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    $('#error-qty').removeClass('hidden');}
+                else {
+                    $('#quantity').attr({ maxLength : 4 });
+                    $('#error-qty').addClass('hidden');
+                }
+            }
+        });
+    </script>
 @stop

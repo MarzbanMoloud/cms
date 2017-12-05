@@ -34,12 +34,24 @@
                                 <td>
                                     {{ ($post->published == '0') ?  'پیش نویس':'منتشر شده' }}
                                 </td>
-                                <td>
-                                    <a href="{{route('deletePost',['post'=>$post->id])}}"><i class="fa fa-trash-o"></i></a>
-                                </td>
-                                <td>
-                                    <a href="{{route('editPost',['post'=>$post->id])}}"><i class="fa fa-edit"></i></a>
-                                </td>
+                                @if($del_posts == 1)
+                                    <td>
+                                        <a href="{{route('deletePost',['post'=>$post->id])}}"><i class="fa fa-trash-o"></i></a>
+                                    </td>
+                                @elseif($del_posts == 0)
+                                    <td>
+                                        <a href="{{route('deletePost',['post'=>$post->id])}}" style=" pointer-events: none;color: grey;"><i class="fa fa-trash-o"></i></a>
+                                    </td>
+                                @endif
+                                @if($edit_posts == 1)
+                                    <td>
+                                        <a href="/post/{{$post->id}}"><i class="fa fa-edit"></i></a>
+                                    </td>
+                                @elseif($edit_posts == 0)
+                                    <td>
+                                        <a href="/post/{{$post->id}}" style=" pointer-events: none;color: grey;"><i class="fa fa-edit"></i></a>
+                                    </td>
+                                @endif
                             </tr>
                         @endforeach
                     </table>

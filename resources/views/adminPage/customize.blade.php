@@ -28,14 +28,7 @@
                     <tr>
                         <td style="width: 300px">
                             <div class="form-group" style="margin-right: 0px;">
-                                <div>
-                                <input type="checkbox" id="edit_other_posts" name="edit_other_posts" @if($permission['edit_other_posts'] ==1) {{ 'checked' }} @endif  >
-                                <label for="edit_other_posts">ویرایش پست کاربران</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" id="del_other_posts" name="del_other_posts" @if($permission['del_other_posts'] ==1) {{ 'checked' }} @endif>
-                                    <label for="del_other_posts">حذف پست کاربران</label>
-                                </div>
+
                                 <div>
                                     <input type="checkbox" id="edit_posts" name="edit_posts" @if($permission['edit_posts'] ==1) {{ 'checked' }} @endif>
                                     <label for="edit_posts">ویرایش پست</label>
@@ -60,14 +53,7 @@
                         </td>
                         <td style="width: 300px">
                             <div class="form-group" style="margin-right: 0px;">
-                                <div>
-                                    <input type="checkbox" id="edit_other_pages" name="edit_other_pages" @if($permission['edit_other_pages'] ==1) {{ 'checked' }} @endif>
-                                    <label for="edit_other_pages">ویرایش صفحه کاربران</label>
-                                </div>
-                                <div>
-                                    <input type="checkbox" id="del_other_pages" name="del_other_pages" @if($permission['del_other_pages'] ==1) {{ 'checked' }} @endif>
-                                    <label for="del_other_pages">حذف صفحه کاربران</label>
-                                </div>
+
                                 <div>
                                     <input type="checkbox" id="edit_pages" name="edit_pages" @if($permission['edit_pages'] ==1) {{ 'checked' }} @endif>
                                     <label for="edit_pages">ویرایش صفحه</label>

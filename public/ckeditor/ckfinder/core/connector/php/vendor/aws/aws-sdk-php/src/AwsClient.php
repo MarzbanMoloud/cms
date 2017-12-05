@@ -103,7 +103,7 @@ class AwsClient implements AwsClientInterface
      *   with a PSR-7 response object or rejected with an array of exception
      *   data. NOTE: This option supersedes any provided "handler" option.
      * - idempotency_auto_fill: (bool|callable) Set to false to disable SDK to
-     *   populate parameters that enabled 'idempotencyToken' trait with a random
+     *   populate parameters that enabled 'idempotencyToken' Traits with a random
      *   UUID v4 value on your behalf. Using default value 'true' still allows
      *   parameter value to be overwritten when provided. Note: auto-fill only
      *   works when cryptographically secure random bytes generator functions

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Post extends Model
 {
     protected $fillable = [
-        'category_id', 'discount_id', 'group_id', 'title','detail','quantity','price','photo','published'
+        'category_id', 'discount_id', 'group_id', 'title','detail','quantity','price','photo','published','user_id'
     ];
     public function orders()
     {

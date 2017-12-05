@@ -65,15 +65,9 @@
                                 </a>
 
                                 <ul class="dropdown-menu" role="menu" style="text-align: right;">
-                                    @if(Auth::user()->role_id == 1)
                                         <li>
-                                            <a href="{{ route('dashboard') }}" target="_blank">پنل مدیریت</a>
+                                            <a href="{{ route('dashboard') }}" target="_blank">پنل </a>
                                         </li>
-                                    @else
-                                        <li>
-                                            <a href="#">پنل کاربری</a>
-                                        </li>
-                                    @endif
                                     <li>
                                         <a href="{{ route('logout') }}">
                                             خروچ از حساب

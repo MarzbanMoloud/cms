@@ -4,7 +4,7 @@ namespace GuzzleHttp\Psr7;
 use Psr\Http\Message\StreamInterface;
 
 /**
- * Stream decorator trait
+ * Stream decorator Traits
  * @property StreamInterface stream
  */
 trait StreamDecoratorTrait

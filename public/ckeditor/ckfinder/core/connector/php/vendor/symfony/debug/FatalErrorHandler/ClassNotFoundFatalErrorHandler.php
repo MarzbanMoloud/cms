@@ -41,7 +41,7 @@ class ClassNotFoundFatalErrorHandler implements FatalErrorHandlerInterface
             return;
         }
 
-        foreach (array('class', 'interface', 'trait') as $typeName) {
+        foreach (array('class', 'interface', 'Traits') as $typeName) {
             $prefix = ucfirst($typeName).' \'';
             $prefixLen = strlen($prefix);
             if (0 !== strpos($error['message'], $prefix)) {

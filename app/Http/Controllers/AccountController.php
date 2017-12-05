@@ -6,6 +6,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Session;
 
 class AccountController extends Controller
 {
@@ -22,14 +23,14 @@ class AccountController extends Controller
                 'fname' => 'required',
                 'lname' => 'required',
                 'phone' => 'required',
-                'national_code' => 'required',
+                'national_code' => 'required|min:10|max:10',
                 'username' => 'required',
                 'password' => 'required|confirmed'
             ]);
 
         $hashedPassword = Hash::make(request('password'));
         $user = User::create([
-            'role_id' => 1 ,
+            'role_id' => 2 ,
             'fname' => $request->fname,
             'lname' => $request->lname,
             'phone' => $request->phone,
@@ -54,17 +55,27 @@ class AccountController extends Controller
     }
 
     //Do login
-    public function login()
+    public function login(Request $request)
     {
-        if (!Auth::attempt(request(['username','password']))) {
+        $this->validate(request(),
+            [
+                'national_code' => 'required|min:10|max:10',
+                'password' => 'required',
+            ]);
+        if (!Auth::attempt(request(['national_code','password']))) {
             return back();
         }
+        $loginUser = User::where('national_code' , \request('national_code'))->first();
+        \Session::put('id', $loginUser['id']);
+        \Session::put('username', $loginUser['username']);
+        \Session::put('islogin', true);
         return redirect()->home();
     }
     //Log out
-    public function destroy()
+    public function destroy(Request $request)
     {
         auth()->logout();
+        $request->session()->flush();
         return redirect()->home();
     }
 

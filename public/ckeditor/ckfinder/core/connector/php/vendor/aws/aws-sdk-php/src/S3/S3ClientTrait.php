@@ -10,7 +10,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\RejectedPromise;
 
 /**
- * A trait providing S3-specific functionality. This is meant to be used in
+ * A Traits providing S3-specific functionality. This is meant to be used in
  * classes implementing \Aws\S3\S3ClientInterface
  */
 trait S3ClientTrait

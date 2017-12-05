@@ -76,7 +76,7 @@ class Acl implements AclInterface
      *      'resourceType'  => 'Images',
      *      'folder'        => '/bar',
      *
-     *      // Permissions
+     *      // Permission
      *      'FOLDER_VIEW'   => true,
      *      'FOLDER_CREATE' => true,
      *      'FOLDER_RENAME' => true,

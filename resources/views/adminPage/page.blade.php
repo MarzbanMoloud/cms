@@ -13,28 +13,30 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body pad">
-                <form role="form" action="{{$modify==1 ? route('updatePage',['page'=>$page->id]) : route('addPage')}}" method="post" enctype="multipart/form-data">
-                    {{ csrf_field() }}
+                {!! Form::open(['url' => ($_SERVER['REQUEST_URI'])  ,  'method' => 'POST' , 'role' => 'form' , 'enctype' => 'multipart/form-data']) !!}
+                {{ Form::token() }}
                     <div class="form-group">
-                        <label for="type">نوع صفحه</label>
-                        <select name="type" class="form-control " id="type">
-                            @foreach($types as $type)
-                                <option value="{{$type->id }}" {{($modify==1 and $type->id==$page->type_id) ? 'selected' : ''}}> {{ $type->typeName }} </option>
-                            @endforeach
-                        </select>
+                        {{ Form::label('type', 'نوع صفحه') }}
+                        {{ Form::select('type' , $types , null ,['class' => 'form-control'])  }}
                     </div>
-                    <div class="form-group">
-                        <label for="tite">عنوان صفحه</label>
-                        <input id="title" type="text" name="title" class="form-control" value="{{$modify==1 ? $page->title : old('title')}}">
-                    </div>
+
                     @if ($errors->has('title'))
                         <span class="help-block error">
-                            <strong>{{ $errors->first('title') }}</strong>
+                                    <strong>{{ $errors->first('title') }}</strong>
+                                </span>
+                    @endif
+                    <div class="form-group">
+                        {{ Form::label('title', 'عنوان') }}
+                        {{ Form::text('title', ($page)? $page->title : '' , ['class' => 'form-control' , 'id' => 'title']) }}
+                        <div id="error-title" data-title="My tooltip"  class="hidden pointer_tooltip">حروف فارسی</div>
+                    </div>
+
+                    @if ($errors->has('ckeditor'))
+                        <span class="help-block error">
+                            <strong>{{ $errors->first('ckeditor') }}</strong>
                         </span>
                     @endif
-                    <textarea id="ckeditor" name="ckeditor" rows="10" cols="80">
-                        {{$modify==1 ? $page->body : old('ckeditor1')}}
-                    </textarea>
+                    {{ Form::textarea('ckeditor', ($page)? $page->body : '' , ['class' => 'form-control' , 'id' => 'ckeditor']) }}
                     <!-- CKEditor start -->
                     <script type="text/javascript" src="{{ asset('ckeditor/ckeditor/ckeditor.js') }}"></script>
                     <script type="text/javascript" src="{{ asset('/ckeditor/ckfinder/ckfinder.js') }}"></script>
@@ -56,10 +58,12 @@
                     <!-- CKEditor end -->
                     <br>
                     <div class="box-footer">
-                        <input type="submit" class="btn btn-primary" name="draft" value="پیش نویس" />
-                        <input type="submit" class="btn btn-primary" name="publish" value="انتشار" />
+                        {{ Form::submit(' پیش نویس' , ['class' => 'btn btn-primary' , 'name' => 'draft']) }}
+                        @if($publish_pages == 1)
+                            {{ Form::submit('انتشار', ['class' => 'btn btn-primary' , 'name' => 'publish']) }}
+                        @endif
                     </div>
-                </form>
+                {!! Form::close() !!}
             </div>
         </div>
         <!-- /.box -->
@@ -67,4 +71,18 @@
     <!-- /.col-->
 </div>
 <!-- ./row -->
+<script>
+    $("#title").on('change keyup paste keydown', function(e) {
+        var p = /^[\u0600-\u06FF\s]+$/;
+        if (e.keyCode != 8) {
+            if (! p.test(e.key)) {
+                e.preventDefault();
+                $('#error-title').removeClass('hidden');}
+            else {
+                $('#title').attr({ maxLength : 30 });
+                $('#error-title').addClass('hidden');
+            }
+        }
+    });
+</script>
 @stop

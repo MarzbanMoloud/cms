@@ -6,12 +6,25 @@
 			<div class="col-sm-4 col-sm-offset-1">
 				<div class="login-form"><!--login form-->
 					<h2 style="text-align: right;">ورود به حساب کاربری</h2>
-					<form action="{{ route('login') }}" method="post">
-						{{ csrf_field() }}
-						<input type="text" placeholder="نام کاربری" class="right-text-input" name="username"/>
-						<input type="password" placeholder="رمز عبور" class="right-text-input" name="password"/>
-						<button type="submit" class="btn btn-default pull-right" name="login">ورود</button>
-					</form>
+					{!! Form::open(['route' => 'login', 'method' => 'POST']) !!}
+
+					{{ Form::token() }}
+						@if ($errors->has('national_code'))
+							<span class="help-block error">
+							{{ $errors->first('national_code') }}
+							</span>
+						@endif
+					{{ Form::text('national_code', null, ['class' => 'right-text-input', 'placeholder' => 'کد ملی', 'value' => old('national_code')]) }}
+
+						@if ($errors->has('password'))
+							<span class="help-block error">
+							{{ $errors->first('password') }}
+							</span>
+						@endif
+					{{ Form::password('password', ['class' => 'right-text-input', 'placeholder' => 'رمز عبور']) }}
+					{{ Form::submit('Login', ['class' => 'btn btn-default pull-right']) }}
+
+					{!! Form::close() !!}
 				</div><!--/login form-->
 			</div>
 			<div class="col-sm-1">
@@ -20,36 +33,36 @@
 			<div class="col-sm-4">
 				<div class="signup-form"><!--sign up form-->
 					<h2 style="text-align: right;">ثبت نام</h2>
-					<form action="{{ route('register') }}" method="post">
-						{{ csrf_field() }}
+					{!! Form::open(['route' => 'register', 'method' => 'POST']) !!}
+					{{ Form::token() }}
 
 						@if ($errors->has('fname'))
 							<span class="help-block error">
 							{{ $errors->first('fname') }}
 							</span>
 						@endif
-						<input type="text" placeholder="نام" class="right-text-input" name="fname"/>
+					{{ Form::text('fname', null, ['class' => 'right-text-input', 'placeholder' => 'نام', 'value' => old('fname')]) }}
 
 						@if ($errors->has('lname'))
 							<span class="help-block error">
 							{{ $errors->first('lname') }}
 							</span>
 						@endif
-						<input type="text" placeholder="نام خانوادگی" class="right-text-input" name="lname"/>
+					{{ Form::text('lname', null, ['class' => 'right-text-input', 'placeholder' => 'نام خانوادگی', 'value' => old('lname')]) }}
 
 						@if ($errors->has('phone'))
 							<span class="help-block error">
 							{{ $errors->first('phone') }}
 							</span>
 						@endif
-						<input type="text" placeholder="تلفن" class="right-text-input" name="phone"/>
+					{{ Form::text('phone', null, ['class' => 'right-text-input', 'placeholder' => 'تلفن', 'value' => old('phone')]) }}
 
 						@if ($errors->has('national_code'))
 							<span class="help-block error">
 							{{ $errors->first('national_code') }}
 							</span>
 						@endif
-						<input type="text" placeholder="کد ملی" class="right-text-input" name="national_code" id="national_code"/>
+					{{ Form::text('national_code', null, ['class' => 'right-text-input','id' => 'national_code' , 'placeholder' => 'کد ملی', 'value' => old('national_code')]) }}
 						<div id="message"></div>
 
 						@if ($errors->has('username'))
@@ -57,18 +70,18 @@
 							{{ $errors->first('username') }}
 							</span>
 						@endif
-						<input type="text" placeholder="نام کاربری" class="right-text-input" name="username"/>
+					{{ Form::text('username', null, ['class' => 'right-text-input', 'placeholder' => 'نام کاربری', 'value' => old('username')]) }}
 
 						@if ($errors->has('password'))
 							<span class="help-block error">
 							{{ $errors->first('password') }}
 							</span>
 						@endif
-						<input type="password" placeholder="رمز عبور " class="right-text-input" name="password"/>
-						<input type="password" name="password_confirmation" placeholder="تکرار رمز عبور" class="right-text-input"/>
+					{{ Form::password('password',  array('placeholder'=>'رمز عبور' , 'class' => 'right-text-input')) }}
+					{{ Form::password('password_confirmation', array('class' => 'right-text-input', 'placeholder' => 'تکرار رمز عبور')) }}
+					{{ Form::submit('register', ['class' => 'btn btn-default pull-right' , 'value' => 'ثبت نام']) }}
 
-						<button type="submit" class="btn btn-default pull-right" name="register">ثبت نام</button>
-					</form>
+					{!! Form::close() !!}
 				</div><!--/sign up form-->
 			</div>
 		</div>
@@ -91,9 +104,9 @@
                     data: {'national_code': national_code, "_token": "{{ csrf_token() }}"},
                     success: function (data) {
                         if (data) {
-                            $("#message").html("<img src='images/cross.png' style='width: 20px;' /> National_code already taken");
+                            $("#message").html("<img src='images/cross.png' style='width: 20px;' /> کد ملی تکراری است");
                         } else {
-                            $("#message").html("<img src='images/yes.png' style='width: 20px;' /> National_code available ");
+                            $("#message").html("<img src='images/yes.png' style='width: 20px;' /> کد ملی تایید شد ");
                         }
                     }
                 });
@@ -102,4 +115,27 @@
     });
 </script>
 <!-- check_Unique_National_code_End -->
+
+<!-- Validation_for_SignUp_Start -->
+<script src="https://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/jquery.validate.min.js"></script>
+<script src="https://cdn.jsdelivr.net/jquery.validation/1.16.0/additional-methods.min.js"></script>
+<script>
+    $.validator.addMethod('customphone', function (value, element) {
+        return this.optional(element) || /^\d{3}-\d{3}-\d{4}$/.test(value);
+    }, "Please enter a valid phone number");
+	$().ready(function () {
+        $( ".signup-form" ).validate({
+            rules: {
+                phone: {
+                    regx:customphone,
+                    required: true,
+                    number: true
+                }
+            }
+        });
+    })
+</script>
+<!-- Validation_for_SignUp_End -->
+
 @stop

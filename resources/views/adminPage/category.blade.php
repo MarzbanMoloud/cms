@@ -10,27 +10,29 @@
             </div>
         </div>
         <!-- /.box-header -->
+
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    <form action="{{$modify==1 ? route('updateCat' , ['category' => $category->id]) : route('addCat')}}" role="form" method="post">
-                        {{ csrf_field() }}
+                    {!! Form::open(['url' => ($_SERVER['REQUEST_URI'])  ,  'method' => 'POST' , 'role' => 'form']) !!}
+                    {{ Form::token() }}
                         <div class="form-group">
-                            <label for="cat">عنوان دسته بندی</label>
-                            <input type="text" class="form-control" name="cat" value="@if($modify == 1) {{ $category->catName }} @endif ">
+
+                            {{ Form::label('cat', 'عنوان دسته بندی') }}
+                            {{ Form::text('cat', ($category)? $category->catName : ''  , ['class' => 'form-control' , 'id' => 'cat']) }}
+                            <div id="error-cat" data-title="My tooltip"  class="hidden pointer_tooltip">حروف فارسی</div>
                         </div>
                         @if ($errors->has('cat'))
                             <span class="help-block error">
-                            <strong>{{ $errors->first('cat') }}</strong>
+                                <strong>{{ $errors->first('cat') }}</strong>
                             </span>
                         @endif
 
                         <div class="box-footer">
-                            <input type="submit" class="btn btn-primary" name="submit" value="ارسال" />
+                            {{ Form::submit('submit', ['class' => 'btn btn-primary' , 'value' => ' ارسال']) }}
                         </div>
-                    </form>
+                    {!! Form::close() !!}
                 </div>
-
             </div>
             <!-- /.row -->
         </div>
@@ -68,7 +70,7 @@
                             <a href="{{route('deleteCat' ,['category' => $category->id])}}"><i class="fa fa-remove"></i></a>
                         </td>
                         <td>
-                            <a href="{{route('editCat' ,['category' => $category->id])}}"><i class="fa fa-edit"></i></a>
+                            <a href="/category/{{$category->id}}"><i class="fa fa-edit"></i></a>
                         </td>
                     </tr>
                 @endforeach
@@ -86,5 +88,19 @@
         </div>
     </div>
     <!-- /.box -->
+    <script>
+        $("#cat").on('change keyup paste keydown', function(e) {
+            var p = /^[\u0600-\u06FF\s]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    $('#error-cat').removeClass('hidden');}
+                else {
+                    $('#cat').attr({ maxLength : 30 });
+                    $('#error-cat').addClass('hidden');
+                }
+            }
+        });
+    </script>
 
 @stop

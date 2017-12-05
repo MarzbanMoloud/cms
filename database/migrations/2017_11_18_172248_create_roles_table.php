@@ -17,15 +17,11 @@ class CreateRolesTable extends Migration
             $table->increments('id');
             $table->string('role');
 
-            $table->integer('edit_other_posts')->default('0');
-            $table->integer('del_other_posts')->default('0');
             $table->integer('edit_posts')->default('0');
             $table->integer('del_posts')->default('0');
             $table->integer('edit_publish_posts')->default('0');
             $table->integer('del_publish_posts')->default('0');
 
-            $table->integer('edit_other_pages')->default('0');
-            $table->integer('del_other_pages')->default('0');
             $table->integer('edit_pages')->default('0');
             $table->integer('del_pages')->default('0');
             $table->integer('edit_publish_pages')->default('0');

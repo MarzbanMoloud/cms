@@ -13,15 +13,11 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body pad">
-                <form role="form" action="{{$modify==1 ? route('updateUser',['user'=>$user->id]) : route('addUser')}}" method="post" enctype="multipart/form-data">
-                        {{ csrf_field() }}
+                    {!! Form::open(['url' => ($_SERVER['REQUEST_URI'])  ,  'method' => 'POST' , 'role' => 'form' , 'enctype' => 'multipart/form-data']) !!}
+                    {{ Form::token() }}
                         <div class="form-group">
-                            <label for="role">گروه</label>
-                            <select class="form-control" name="role" id="role">
-                            @foreach($roles as $role)
-                                <option value="{{ $role->id }}"> {{ $role->role }} </option>
-                            @endforeach
-                            </select>
+                            {{ Form::label('role', 'گروه') }}
+                            {{ Form::select('role' , $roles , null ,['class' => 'form-control'])  }}
                         </div>
 
                         @if ($errors->has('fname'))
@@ -30,9 +26,10 @@
                                 </span>
                         @endif
                         <div class="form-group">
-                            <label for="fname">نام</label>
-                            <input type="text" class="form-control" id="fname"  name="fname" value="{{$modify==1 ? $user->fname : old('fname')}}">
+                            {{ Form::label('fname', 'نام') }}
+                            {{ Form::text('fname', ($user)? $user->fname : ''  , ['class' => 'form-control' , 'id' => 'fname']) }}
                         </div>
+                        <div id="error-fname" data-title="My tooltip"  class="hidden pointer_tooltip">حروف فارسی</div>
 
                         @if ($errors->has('lname'))
                             <span class="help-block error">
@@ -40,9 +37,10 @@
                                 </span>
                         @endif
                         <div class="form-group">
-                            <label for="lname">نام خانوادگی</label>
-                            <input type="text" class="form-control" id="lname"  name="lname" value="{{$modify==1 ? $user->lname : old('lname')}}">
+                            {{ Form::label('lname', 'نام خانوادگی') }}
+                            {{ Form::text('lname', ($user)? $user->lname : ''  , ['class' => 'form-control' , 'id' => 'lname']) }}
                         </div>
+                        <div id="error-lname" data-title="My tooltip"  class="hidden pointer_tooltip">حروف فارسی</div>
 
                         @if ($errors->has('phone'))
                             <span class="help-block error">
@@ -50,9 +48,10 @@
                                 </span>
                         @endif
                         <div class="form-group">
-                            <label for="phone">تلفن</label>
-                            <input type="text" class="form-control" id="phone"  name="phone" value="{{$modify==1 ? $user->phone : old('phone')}}">
+                            {{ Form::label('phone', 'تلفن') }}
+                            {{ Form::text('phone', ($user)? $user->phone : ''  , ['class' => 'form-control' , 'id' => 'phone']) }}
                         </div>
+                        <div id="error-phone" data-title="My tooltip"  class="hidden pointer_tooltip">تلفن</div>
 
                         @if ($errors->has('national_code'))
                             <span class="help-block error">
@@ -60,37 +59,39 @@
                                 </span>
                         @endif
                         <div class="form-group">
-                            <label for="national_code">کد ملی</label>
-                            <input type="text" class="form-control" id="national_code" name="national_code" value="{{$modify==1 ? $user->national_code : old('national_code')}}">
+                            {{ Form::label('national_code', 'کد ملی') }}
+                            {{ Form::text('national_code', ($user)? $user->national_code : ''  , ['class' => 'form-control' , 'id' => 'national_code']) }}
                         </div>
                         <div id="message"></div>
+                        <div id="error-ncode" data-title="My tooltip"  class="hidden pointer_tooltip">کد ملی</div>
 
                         @if ($errors->has('username'))
                             <span class="help-block error">
                                 {{ $errors->first('username') }}
-                                </span>
+                            </span>
                         @endif
                         <div class="form-group">
-                            <label for="username">نام کاربری</label>
-                            <input type="text" class="form-control" id="username" name="username" value="{{$modify==1 ? $user->username : old('username')}}">
+                            {{ Form::label('username', 'نام کاربری') }}
+                            {{ Form::text('username', ($user)? $user->username : ''  , ['class' => 'form-control' , 'id' => 'username']) }}
                         </div>
+                        <div id="error-username" data-title="My tooltip"  class="hidden pointer_tooltip">حروف لاتین</div>
 
                         @if ($errors->has('password'))
                             <span class="help-block error">
                                 {{ $errors->first('password') }}
-                                </span>
+                            </span>
                         @endif
                         <div class="form-group">
-                            <label for="image"> کلمه عبور</label>
-                            <input type="password" placeholder="رمز عبور " class="form-control" name="password"/>
+                            {{ Form::label('password', 'کلمه عبور') }}
+                            {{ Form::password('password' , ['class' => 'form-control']) }}
                             <br>
-                            <input type="password" name="password_confirmation" placeholder="تکرار کلمه عبور" class="form-control"/>
+                            {{ Form::password('password_confirmation' , ['class' => 'form-control']) }}
                         </div>
 
                         <div class="box-footer">
-                            <input type="submit" class="btn btn-primary" name="submit" value="ارسال" />
+                            {{ Form::submit('ارسال', ['class' => 'btn btn-primary' , 'name' => 'submit']) }}
                         </div>
-                </form>
+                    {!! Form::close() !!}
             </div>
         </div>
             <!-- /.box -->
@@ -125,4 +126,74 @@
         });
     </script>
     <!-- check_Unique_National_code_End -->
+    <script>
+        $("#fname").on('change keyup paste keydown', function(e) {
+            var p = /^[\u0600-\u06FF\s]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    $('#error-fname').removeClass('hidden');}
+                else {
+                    $('#fname').attr({ maxLength : 30 });
+                    $('#error-fname').addClass('hidden');
+                }
+            }
+        });
+    </script>
+    <script>
+        $("#lname").on('change keyup paste keydown', function(e) {
+            var p = /^[\u0600-\u06FF\s]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    $('#error-lname').removeClass('hidden');}
+                else {
+                    $('#lname').attr({ maxLength : 40 });
+                    $('#error-lname').addClass('hidden');
+                }
+            }
+        });
+    </script>
+    <script>
+        $("#phone").on('change keyup paste keydown', function(e) {
+            var p = /^[0-9]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    $('#error-phone').removeClass('hidden');}
+                else {
+                    $('#phone').attr({ maxLength : 11 });
+                    $('#error-phone').addClass('hidden');
+                }
+            }
+        });
+    </script>
+    <script>
+        $("#national_code").on('change keyup paste keydown', function(e) {
+            var p = /^[0-9]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    $('#error-ncode').removeClass('hidden');}
+                else {
+                    $('#national_code').attr({ maxLength : 10 });
+                    $('#error-ncode').addClass('hidden');
+                }
+            }
+        });
+    </script>
+    <script>
+        $("#username").on('change keyup paste keydown', function(e) {
+            var p = /^[a-zA-Z]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    $('#error-username').removeClass('hidden');}
+                else {
+                    $('#username').attr({ maxLength : 15 });
+                    $('#error-username').addClass('hidden');
+                }
+            }
+        });
+    </script>
 @stop

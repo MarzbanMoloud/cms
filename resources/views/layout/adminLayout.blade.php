@@ -17,6 +17,9 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{ asset('admin/dist/css/skins/_all-skins.min.css') }}">
+    <!-- Show Error Message -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Show Error Message -->
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -32,7 +35,28 @@
             font-family:"B Yekan Regular";
             direction: rtl;
         }
+        .error{
+            color: red;
+        }
+        .message{
+            display:none;
+            border-radius: 8px ;
+            background-color: lightblue;
+            text-align: center
+        }
+        .hidden{
+             display: none;
+         }
+        .pointer_tooltip{
+            width : auto;
+            height : auto;
+            padding : 10px;
+            border-radius : 5px;
+            background-color :#f5cac2 ;
+            position: absolute;
+        }
     </style>
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
 <!-- Site wrapper -->
@@ -40,9 +64,9 @@
 
     <header class="main-header" >
         <!-- Logo -->
-        <a href="../../index2.html" class="logo">
+        <a href="../../index2.html" class="logo" style="font-family: 'B Yekan Regular'">
             <!-- mini logo for sidebar mini 50x50 pixels -->
-            <span class="logo-mini"><b>A</b>LT</span>
+            <span class="logo-mini">پنل</span>
             <!-- logo for regular state and mobile devices -->
             <span class="logo-lg">پنل مدیریت</span>
         </a>
@@ -66,20 +90,28 @@
                     <!-- User Account: style can be found in dropdown.less -->
                     <li class="dropdown user user-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="{{ asset('admin/dist/img/user2-160x160.jpg') }}" class="user-image" alt="User Image">
-                            <span class="hidden-xs">Alexander Pierce</span>
+                            @if($infoProfile['profile']['avatar'] != '')
+                                <img src={{$infoProfile['profile']['avatar']}} class="img-circle" alt="User Image" style="width: 20px">
+                            @else
+                                <img src="{{ asset('images/user.jpg') }}" style="width: 20px" class="img-circle" alt="User Image">
+                            @endif
+                            <span class="hidden-xs">{{$infoProfile['username']}}</span>
                         </a>
                         <ul class="dropdown-menu">
                             <!-- User image -->
                             <li class="user-header">
-                                <img src="{{ asset('admin/dist/img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
-
+                                @if($infoProfile['profile']['avatar'] != '')
+                                    <img src={{$infoProfile['profile']['avatar']}} class="img-circle" alt="User Image" >
+                                @else
+                                    <img src="{{ asset('images/user.jpg') }}" class="img-circle" alt="User Image">
+                                @endif
                                 <p>
-                                    Alexander Pierce - Web Developer
-                                    <small>Member since Nov. 2012</small>
+                                    {{$infoProfile['username']}} - {{$infoProfile['profile']['job']}}
+                                    <small> تاریخ عضویت - {{$infoProfile['created_at']}}</small>
                                 </p>
                             </li>
                             <!-- Menu Body -->
+
                             <li class="user-body">
                                 <div class="row">
                                     <div class="col-xs-4 text-center">
@@ -97,10 +129,10 @@
                             <!-- Menu Footer-->
                             <li class="user-footer">
                                 <div class="pull-left">
-                                    <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                    <a href="{{ route('profile') }}" class="btn btn-default btn-flat">پروفایل</a>
                                 </div>
                                 <div class="pull-right">
-                                    <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                    <a href="#" class="btn btn-default btn-flat">خروج</a>
                                 </div>
                             </li>
                         </ul>
@@ -119,7 +151,11 @@
                                     <li><!-- start message -->
                                         <a href="#">
                                             <div class="pull-left">
-                                                <img src="../../dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                                                @if($infoProfile['profile']['avatar'] != '')
+                                                    <img src={{$infoProfile['profile']['avatar']}} class="img-circle" alt="User Image">
+                                                @else
+                                                    <img src="{{ asset('images/user.jpg') }}" class="img-circle" alt="User Image">
+                                                @endif
                                             </div>
                                             <h4>
                                                 Support Team
@@ -203,18 +239,22 @@
         <section class="sidebar">
             <!-- Sidebar user panel -->
             <div class="user-panel">
-                <div class="pull-left image">
-                    <img src="{{ asset('admin/dist/img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
+                <div class="pull-right image">
+                    @if($infoProfile['profile']['avatar'] != '')
+                        <img src={{$infoProfile['profile']['avatar']}} class="img-circle" alt="User Image">
+                    @else
+                        <img src="{{ asset('images/user.jpg') }}" class="img-circle" alt="User Image">
+                    @endif
                 </div>
-                <div class="pull-left info">
-                    <p>Alexander Pierce</p>
-                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                <div class="pull-right info">
+                    <p>{{$infoProfile['username']}}</p>
+                    <a href="#"><i class="fa fa-circle text-success"></i> آنلاین</a>
                 </div>
             </div>
             <!-- search form -->
             <form action="#" method="get" class="sidebar-form">
                 <div class="input-group">
-                    <input type="text" name="q" class="form-control" placeholder="Search...">
+                    <input type="text" name="q" class="form-control" placeholder="جستجو">
                     <span class="input-group-btn">
                 <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
                 </button>
@@ -224,7 +264,7 @@
             <!-- /.search form -->
             <!-- sidebar menu: : style can be found in sidebar.less -->
             <ul class="sidebar-menu" data-widget="tree">
-                <li class="header">MAIN NAVIGATION</li>
+                <li class="header">منو </li>
 
                 <li>
                     <a href="{{ route('dashboard') }}">
@@ -233,13 +273,14 @@
                     </a>
                 </li>
 
-
-                <li>
-                    <a href="{{ route('category') }}">
-                        <i class="fa fa-pie-chart"></i>
-                        <span>دسته بندی</span>
-                    </a>
-                </li>
+                @if($manage_category == '1')
+                    <li>
+                        <a href="{{ route('category') }}">
+                            <i class="fa fa-pie-chart"></i>
+                            <span>دسته بندی</span>
+                        </a>
+                    </li>
+                @endif
 
                 <li class="treeview">
                     <a href="#">
@@ -267,7 +308,7 @@
                         <li><a href="{{ route('postList') }}"><i class="fa fa-circle-o"></i> مدیریت پست ها</a></li>
                     </ul>
                 </li>
-
+                @if($list_user == 1 or $create_user == 1 and $promote_user == 1)
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-users"></i>
@@ -277,11 +318,19 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ route('userList') }}"><i class="fa fa-circle-o"></i> لیست کاربران</a></li>
-                        <li><a href="{{ route('user') }}"><i class="fa fa-circle-o"></i> ایجاد کاربر</a></li>
-                        <li><a href="{{ route('promote') }}"><i class="fa fa-circle-o"></i> مجوزها</a></li>
+                        @if($list_user == 1)
+                            <li><a href="{{ route('userList') }}"><i class="fa fa-circle-o"></i> لیست کاربران</a></li>
+                        @endif
+                        @if($create_user == 1)
+                            <li><a href="{{ route('user') }}"><i class="fa fa-circle-o"></i> ایجاد کاربر</a></li>
+                        @endif
+                        @if($promote_user == 1)
+                            <li><a href="{{ route('promote') }}"><i class="fa fa-circle-o"></i> مجوزها</a></li>
+                        @endif
                     </ul>
                 </li>
+                @endif
+
 
             </ul>
         </section>
@@ -293,9 +342,20 @@
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
+        @if(isset($msg) and $msg != '')
+            <br>
+            <div class="col-md-4 col-md-offset-4" >
+                <div id="message" class="message">{{ $msg }}</div>
+            </div>
+        @elseif( session('msg') and  session('msg') != '')
+            <br>
+            <div class="col-md-4 col-md-offset-4" >
+                <div id="message" class="message">{{ session('msg') }}</div>
+            </div>
+        @endif
         <section class="content-header">
-            <h1>
-                Blank page
+            <h1 style="font-family: 'B Yekan Regular'">
+                @yield('title')
             </h1>
         </section>
         <section class="content-header">
@@ -539,6 +599,15 @@
     $(document).ready(function () {
         $('.sidebar-menu').tree()
     })
+</script>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script>
+    //When the page has loaded.
+    $( document ).ready(function(){
+        $('#message').slideDown('slow', function(){
+            $('#message').delay(4000).slideUp(1000);
+        });
+    });
 </script>
 </body>
 </html>

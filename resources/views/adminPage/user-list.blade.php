@@ -35,12 +35,25 @@
                                 <td>{{ $user->national_code }}</td>
                                 <td>{{ $user->username }}</td>
                                 <td>{{ $user->role->role }}</td>
-                                <td>
-                                    <a href="{{ route('removeUser' , ['user' => $user->id]) }}"><i class="fa fa-remove"></i></a>
-                                </td>
-                                <td>
-                                    <a href="{{ route('editUser' , ['user' => $user->id]) }}"><i class="fa fa-edit"></i></a>
-                                </td>
+                                @if($del_user == 1)
+                                    <td>
+                                        <a href="{{ route('removeUser' , ['user' => $user->id]) }}"><i class="fa fa-remove"></i></a>
+                                    </td>
+                                @elseif($del_user == 0)
+                                    <td>
+                                        <a href="{{ route('removeUser' , ['user' => $user->id]) }}" style=" pointer-events: none;color: grey;"><i class="fa fa-remove"></i></a>
+                                    </td>
+                                @endif
+
+                                @if($edit_user == 1)
+                                    <td>
+                                        <a href="/user/{{$user->id}}"><i class="fa fa-edit"></i></a>
+                                    </td>
+                                @elseif($edit_user == 0)
+                                    <td>
+                                        <a href="/user/{{$user->id}}" style=" pointer-events: none;color: grey;"><i class="fa fa-edit"></i></a>
+                                    </td>
+                                @endif
                                 <td>
                                         <form action="{{ route('statusUser' , ['user' => $user->id]) }}" method="post">
                                             {{ csrf_field() }}

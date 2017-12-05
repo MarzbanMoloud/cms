@@ -34,12 +34,25 @@
                             <td>
                                 {{ ($page->published == '0') ?  'پیش نویس':'منتشر شده' }}
                             </td>
-                            <td>
-                                <a href="{{route('deletePage',['page' => $page->id])}}"><i class="fa fa-trash-o"></i></a>
-                            </td>
-                            <td>
-                                <a href="{{route('editPage',['page' => $page->id])}}"><i class="fa fa-edit"></i></a>
-                            </td>
+                            @if($del_pages == 1)
+                                <td>
+                                    <a href="{{route('deletePage',['page' => $page->id])}}"><i class="fa fa-trash-o"></i></a>
+                                </td>
+                            @elseif($del_pages == 0)
+                                <td>
+                                    <a href="{{route('deletePage',['page' => $page->id])}}" style=" pointer-events: none;color: grey;"><i class="fa fa-trash-o"></i></a>
+                                </td>
+                            @endif
+
+                            @if($edit_pages == 1)
+                                <td>
+                                    <a href="/page/{{$page->id}}"><i class="fa fa-edit"></i></a>
+                                </td>
+                            @elseif($edit_pages == 0)
+                                <td>
+                                    <a href="/page/{{$page->id}}" style=" pointer-events: none;color: grey;"><i class="fa fa-edit"></i></a>
+                                </td>
+                            @endif
                         </tr>
                         @endforeach
                     </table>

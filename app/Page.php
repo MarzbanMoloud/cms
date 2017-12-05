@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Page extends Model
 {
     protected $fillable = [
-        'title', 'body' , 'type_id' ,'published'
+        'title', 'body' , 'type_id' ,'published' , 'user_id'
     ];
 
     public function type()

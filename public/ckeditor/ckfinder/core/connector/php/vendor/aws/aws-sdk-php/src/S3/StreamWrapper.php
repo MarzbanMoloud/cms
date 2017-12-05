@@ -317,7 +317,7 @@ class StreamWrapper
      * Support for mkdir().
      *
      * @param string $path    Directory which should be created.
-     * @param int    $mode    Permissions. 700-range permissions map to
+     * @param int    $mode    Permission. 700-range permissions map to
      *                        ACL_PUBLIC. 600-range permissions map to
      *                        ACL_AUTH_READ. All other permissions map to
      *                        ACL_PRIVATE. Expects octal form.

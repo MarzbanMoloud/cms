@@ -190,7 +190,7 @@ abstract class ACLBase
             Validate::isDate($start);
         }
         Validate::isDate($expiry);
-        Validate::isString($permissions, 'permissions');
+        Validate::isString($permissions, 'Permission');
 
         $accessPolicy = new AccessPolicy($this->getResourceType());
         $accessPolicy->setStart($start);

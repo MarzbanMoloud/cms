@@ -188,7 +188,7 @@ class ClientResolver
         'idempotency_auto_fill' => [
             'type'      => 'value',
             'valid'     => ['bool', 'callable'],
-            'doc'       => 'Set to false to disable SDK to populate parameters that enabled \'idempotencyToken\' trait with a random UUID v4 value on your behalf. Using default value \'true\' still allows parameter value to be overwritten when provided. Note: auto-fill only works when cryptographically secure random bytes generator functions(random_bytes, openssl_random_pseudo_bytes or mcrypt_create_iv) can be found. You may also provide a callable source of random bytes.',
+            'doc'       => 'Set to false to disable SDK to populate parameters that enabled \'idempotencyToken\' Traits with a random UUID v4 value on your behalf. Using default value \'true\' still allows parameter value to be overwritten when provided. Note: auto-fill only works when cryptographically secure random bytes generator functions(random_bytes, openssl_random_pseudo_bytes or mcrypt_create_iv) can be found. You may also provide a callable source of random bytes.',
             'default'   => true,
             'fn'        => [__CLASS__, '_apply_idempotency_auto_fill']
         ],

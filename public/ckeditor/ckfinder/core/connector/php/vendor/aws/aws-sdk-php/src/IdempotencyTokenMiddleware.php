@@ -5,7 +5,7 @@ use Aws\Api\Service;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * @internal Middleware that auto fills parameters with `idempotencyToken` trait
+ * @internal Middleware that auto fills parameters with `idempotencyToken` Traits
  */
 class IdempotencyTokenMiddleware
 {
@@ -18,7 +18,7 @@ class IdempotencyTokenMiddleware
 
     /**
      * Creates a middleware that populates operation parameter
-     * with trait 'idempotencyToken' enabled with a random UUIDv4
+     * with Traits 'idempotencyToken' enabled with a random UUIDv4
      *
      * One of following functions needs to be available
      * in order to generate random bytes used for UUID
@@ -69,7 +69,7 @@ class IdempotencyTokenMiddleware
                     // populating UUIDv4 only when the parameter is not set
                     $command[$member] = $command[$member]
                         ?: $this->getUuidV4($bytes);
-                    // only one member could have the trait enabled
+                    // only one member could have the Traits enabled
                     break;
                 }
             }
