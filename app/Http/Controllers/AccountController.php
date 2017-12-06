@@ -20,10 +20,10 @@ class AccountController extends Controller
     {
         $this->validate(request(),
             [
-                'fname' => 'required',
-                'lname' => 'required',
-                'phone' => 'required',
-                'national_code' => 'required|min:10|max:10',
+                'fname' => 'required|max:30',
+                'lname' => 'required|max:30',
+                'phone' => 'required|max:11|min:11',
+                'national_code' => 'required|max:10|min:10|unique:users',
                 'username' => 'required',
                 'password' => 'required|confirmed'
             ]);
@@ -59,13 +59,13 @@ class AccountController extends Controller
     {
         $this->validate(request(),
             [
-                'national_code' => 'required|min:10|max:10',
-                'password' => 'required',
+                'ncode' => 'required|min:10|max:10',
+                'pass' => 'required',
             ]);
-        if (!Auth::attempt(request(['national_code','password']))) {
+        if (!Auth::attempt(['national_code' => $request->ncode ,'password' => $request->pass])) {
             return back();
         }
-        $loginUser = User::where('national_code' , \request('national_code'))->first();
+        $loginUser = User::where('national_code' , \request('ncode'))->first();
         \Session::put('id', $loginUser['id']);
         \Session::put('username', $loginUser['username']);
         \Session::put('islogin', true);

@@ -14,13 +14,13 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-md-12">
-                    {!! Form::open(['url' => ($_SERVER['REQUEST_URI'])  ,  'method' => 'POST' , 'role' => 'form']) !!}
+                    {!! Form::open([NULL ,  'method' => 'POST' , 'role' => 'form']) !!}
                     {{ Form::token() }}
                         <div class="form-group">
 
                             {{ Form::label('cat', 'عنوان دسته بندی') }}
                             {{ Form::text('cat', ($category)? $category->catName : ''  , ['class' => 'form-control' , 'id' => 'cat']) }}
-                            <div id="error-cat" data-title="My tooltip"  class="hidden pointer_tooltip">حروف فارسی</div>
+                            <div id="error" data-title="My tooltip"  class="hidden pointer_tooltip"></div>
                         </div>
                         @if ($errors->has('cat'))
                             <span class="help-block error">
@@ -29,7 +29,7 @@
                         @endif
 
                         <div class="box-footer">
-                            {{ Form::submit('submit', ['class' => 'btn btn-primary' , 'value' => ' ارسال']) }}
+                            {{ Form::submit('ارسال', ['class' => 'btn btn-primary' , 'name' => 'submit']) }}
                         </div>
                     {!! Form::close() !!}
                 </div>
@@ -78,28 +78,31 @@
         </div>
         <!-- /.box-body -->
         <div class="box-footer clearfix">
-            <ul class="pagination pagination-sm no-margin pull-right">
-                <li><a href="#">&laquo;</a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">&raquo;</a></li>
-            </ul>
+            {{ $categories->links() }}
         </div>
     </div>
     <!-- /.box -->
     <script>
-        $("#cat").on('change keyup paste keydown', function(e) {
+        function persian_denied(elename , e , pos , msg){
             var p = /^[\u0600-\u06FF\s]+$/;
             if (e.keyCode != 8) {
                 if (! p.test(e.key)) {
                     e.preventDefault();
-                    $('#error-cat').removeClass('hidden');}
-                else {
-                    $('#cat').attr({ maxLength : 30 });
-                    $('#error-cat').addClass('hidden');
+                    document.getElementById("error").innerHTML = msg;
+                    $('#error').css("top",pos+38).removeClass('hidden');
+                } else {
+                    elename.attr({ maxLength : 25 });
+                    $('#error').addClass('hidden');
                 }
             }
+        }
+        $("#cat").on('change keyup paste keydown', function(e) {
+            persian_denied( $("#cat") , e , parseInt($("#cat").position().top) , "حروف فارسی");
+        });
+        $(function() {
+            $(".form-control").blur(function () {
+                $('#error').addClass('hidden');
+            });
         });
     </script>
 

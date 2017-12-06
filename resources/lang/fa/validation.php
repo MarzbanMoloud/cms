@@ -142,6 +142,8 @@ return array(
         "nationalCode" => "کد ملی",
         "pass" => "رمز عبور",
         "ckeditor" => "متن",
+        "ncode" => "کد ملی",
+        "pass" => "رمز عبور",
 
 
     ),

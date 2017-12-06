@@ -22,10 +22,8 @@ class AppServiceProvider extends ServiceProvider
         });
         view()->composer('layout.adminLayout', function($view)
         {
-            $infoProfile = User::with(['profile' => function ($query ) {
-                $id = \Session::get('id');
-                $query->where('user_id', $id);
-            }])->first();
+            $id = \Session::get('id');
+            $infoProfile = User::where('id', $id)->with('profile') ->first();
             $permission = $this->permissionsLoginUser();
             $manage_category = $permission['role']['manage_category'];
             $create_user = $permission['role']['create_user'];

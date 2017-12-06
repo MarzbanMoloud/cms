@@ -35,6 +35,17 @@
         body{
             font-family: "B Yekan Regular";
         }
+        .hidden{
+            display: none;
+        }
+        .pointer_tooltip{
+            width : auto;
+            height : auto;
+            padding : 10px;
+            border-radius : 5px;
+            background-color :#f5cac2 ;
+            position: absolute;
+        }
     </style>
 </head><!--/head-->
 

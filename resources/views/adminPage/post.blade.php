@@ -34,7 +34,7 @@
                         <div class="form-group">
                             {{ Form::label('title', 'عنوان') }}
                             {{ Form::text('title', ($post)? $post->title : ''  , ['class' => 'form-control' , 'id' => 'title']) }}
-                            <div id="error-title" data-title="My tooltip"  class="hidden pointer_tooltip">حروف فارسی</div>
+                            <div id="error" data-title="My tooltip"  class="hidden pointer_tooltip"></div>
                         </div>
 
                         @if ($errors->has('price'))
@@ -45,7 +45,6 @@
                         <div class="form-group">
                             {{ Form::label('price', 'قیمت') }}
                             {{ Form::text('price', ($post)? $post->price : ''  , ['class' => 'form-control' , 'id' => 'price']) }}
-                            <div id="error-price" data-title="My tooltip"  class="hidden pointer_tooltip">فقط عدد</div>
                         </div>
 
                         @if ($errors->has('quantity'))
@@ -55,8 +54,7 @@
                         @endif
                         <div class="form-group">
                             {{ Form::label('quantity', 'تعداد') }}
-                            {{ Form::text('quantity', ($post)? $post->quantity : ''  , ['class' => 'form-control' , 'id' => 'quantity']) }}
-                            <div id="error-qty" data-title="My tooltip"  class="hidden pointer_tooltip">فقط عدد</div>
+                            {{ Form::text('quantity', ($post)? $post->quantity : ''  , ['class' => 'form-control num_must' , 'id' => 'quantity']) }}
                         </div>
 
                         <div class="form-group">
@@ -72,7 +70,6 @@
                         <div class="form-group">
                             {{ Form::label('detail', 'توضیحات') }}
                             {{ Form::textarea('detail', ($post)? $post->detail : '' , ['size' => '30x5' , 'class' => 'form-control']) }}
-                        </textarea>
                         </div>
 
                         <div class="box-footer">
@@ -91,44 +88,61 @@
     <!-- ./row -->
 
     <script>
-        $("#title").on('change keyup paste keydown', function(e) {
+        function persian_denied(elename , e , pos , msg){
             var p = /^[\u0600-\u06FF\s]+$/;
             if (e.keyCode != 8) {
                 if (! p.test(e.key)) {
                     e.preventDefault();
-                    $('#error-title').removeClass('hidden');}
-                else {
-                    $('#title').attr({ maxLength : 30 });
-                    $('#error-title').addClass('hidden');
+                    document.getElementById("error").innerHTML = msg;
+                    $('#error').css("top",pos+38).removeClass('hidden');
+                } else {
+                    elename.attr({ maxLength : 25 });
+                    $('#error').addClass('hidden');
                 }
             }
+        }
+        $("#title").on('change keyup paste keydown', function(e) {
+            persian_denied( $("#title") , e , parseInt($("#title").position().top) , "حروف فارسی");
         });
-    </script>
-    <script>
-        $("#price").on('change keyup paste keydown', function(e) {
-            var p = /^[0-9]+$/;
-            if (e.keyCode != 8) {
-                if (! p.test(e.key)) {
-                    e.preventDefault();
-                    $('#error-price').removeClass('hidden');}
-                else {
-                    $('#price').attr({ maxLength : 9 });
-                    $('#error-price').addClass('hidden');
-                }
-            }
-        });
-    </script>
-    <script>
+
         $("#quantity").on('change keyup paste keydown', function(e) {
-            var p = /^[0-9]+$/;
-            if (e.keyCode != 8) {
-                if (! p.test(e.key)) {
-                    e.preventDefault();
-                    $('#error-qty').removeClass('hidden');}
-                else {
-                    $('#quantity').attr({ maxLength : 4 });
-                    $('#error-qty').addClass('hidden');
-                }
+            $('#quantity').attr({ maxLength : 4 });
+        });
+
+        $(function() {
+            $(".form-control").blur(function () {
+                $('#error').addClass('hidden');
+            });
+        });
+
+        $('#price').keyup(function(event) {
+
+            // skip for arrow keys
+            if(event.which >= 37 && event.which <= 40) return;
+
+            // format number
+            $(this).val(function(index, value) {
+                return value
+                    .replace(/\D/g, "")
+                    .replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                    ;
+            });
+            $('#price').attr({ maxLength : 15 });
+        });
+
+        $(".num_must").keydown(function (e) {
+            // Allow: backspace, delete, tab, escape, enter and .
+            if ($.inArray(e.keyCode, [46, 8, 9, 27, 13, 110, 190]) !== -1 ||
+                // Allow: Ctrl+A, Command+A
+                (e.keyCode === 65 && (e.ctrlKey === true || e.metaKey === true)) ||
+                // Allow: home, end, left, right, down, up
+                (e.keyCode >= 35 && e.keyCode <= 40)) {
+                // let it happen, don't do anything
+                return;
+            }
+            // Ensure that it is a number and stop the keypress
+            if ((e.shiftKey || (e.keyCode < 48 || e.keyCode > 57)) && (e.keyCode < 96 || e.keyCode > 105)) {
+                e.preventDefault();
             }
         });
     </script>

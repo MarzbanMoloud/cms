@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Traits\Permission;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -49,7 +50,7 @@ class AdminController extends Controller
                     $msg = 'دسته بندی با موفقیت ثبت شد';
                 }
             }
-            $categories = Category::all();
+            $categories = Category::paginate(10);
             return view('adminPage.category', ['category' => $category, 'categories' => $categories, 'msg' => $msg]);
         }
         else{
@@ -75,8 +76,9 @@ class AdminController extends Controller
             $this->validate(request(),
                 [
                     'title' => 'required|min:3|max:25',
-                    'price' => 'required',
-                    'quantity' => 'required',
+                    'price' => 'required|max:15',
+                    'quantity' => 'required|max:4',
+                    'image' => 'required|mimes:jpeg,png,gif,jpg',
                     'detail' => 'required',
                 ]);
             if ($post->id){
@@ -90,11 +92,12 @@ class AdminController extends Controller
                     $name = time() . '-' . $file->getClientOriginalName();
                     $file->move('photos', $name);
                     $path = "/photos/" . $name;
+                    $price = str_replace(',', '', $request->price);
                     if (isset($_POST['draft'])) {
-                        $post->update([ 'discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $request->price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail, 'published' => '0']);
+                        $post->update([ 'discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail, 'published' => '0']);
                         $msg = 'پست ویرایش و به عنوان پیش نویس ثبت شد';
                     }elseif(isset($_POST['publish'])){
-                        $post->update(['discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $request->price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail, 'published' => '1']);
+                        $post->update(['discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail, 'published' => '1']);
                         $msg = 'پست ویرایش و منتشر شد';
                     }
                 }
@@ -104,11 +107,12 @@ class AdminController extends Controller
                 $name = time() . '-' . $file->getClientOriginalName();
                 $file->move('photos', $name);
                 $path = "/photos/" . $name;
+                $price = str_replace(',', '', $request->price);
                 if (isset($_POST['draft'])) {
-                    Post::create(['user_id' => $id , 'category_id' => $request->cat, 'discount_id' => $request->discount, 'title' => $request->title, 'price' => $request->price, 'photo' => $path, 'quantity' => $request->quantity, 'detail' => $request->detail, 'published' => '0']);
+                    Post::create(['user_id' => $id , 'category_id' => $request->cat, 'discount_id' => $request->discount, 'title' => $request->title, 'price' => $price, 'photo' => $path, 'quantity' => $request->quantity, 'detail' => $request->detail, 'published' => '0']);
                     $msg = 'پست جدید به عنوان پیش نویس ثبت شد';
                 }elseif (isset($_POST['publish'])){
-                    Post::create(['user_id' => $id ,'category_id' => $request->cat, 'discount_id' => $request->discount, 'title' => $request->title, 'price' => $request->price, 'photo' => $path, 'quantity' => $request->quantity, 'detail' => $request->detail, 'published' => '1']);
+                    Post::create(['user_id' => $id ,'category_id' => $request->cat, 'discount_id' => $request->discount, 'title' => $request->title, 'price' => $price, 'photo' => $path, 'quantity' => $request->quantity, 'detail' => $request->detail, 'published' => '1']);
                     $msg = 'پست جدید ثبت و منتشر شد';
                 }
             }
@@ -190,7 +194,7 @@ class AdminController extends Controller
             $permission = $this->permissionsLoginUser();
             $edit_user = $permission['role']['edit_user'];
             $del_user = $permission['role']['del_user'];
-            $users = User::with('role')->get();
+            $users = User::with('role')->paginate(10);
             return view('adminPage.user-list', ['users' => $users, 'edit_user' => $edit_user, 'del_user' => $del_user]);
         }else{
             return view('403');
@@ -227,9 +231,9 @@ class AdminController extends Controller
                 $this->validate(request(),
                     [
                         'fname' => 'required|max:30',
-                        'lname' => 'required|max:40',
-                        'phone' => 'required|max:11',
-                        'national_code' => 'required|max:10',
+                        'lname' => 'required|max:30',
+                        'phone' => 'required|max:11|min:11',
+                        'national_code' => 'required|max:10|min:10|unique:users',
                         'username' => 'required',
                         'password' => 'required|confirmed'
                     ]);

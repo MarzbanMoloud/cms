@@ -28,7 +28,7 @@
                     <div class="form-group">
                         {{ Form::label('title', 'عنوان') }}
                         {{ Form::text('title', ($page)? $page->title : '' , ['class' => 'form-control' , 'id' => 'title']) }}
-                        <div id="error-title" data-title="My tooltip"  class="hidden pointer_tooltip">حروف فارسی</div>
+                        <div id="error" data-title="My tooltip"  class="hidden pointer_tooltip"></div>
                     </div>
 
                     @if ($errors->has('ckeditor'))
@@ -72,17 +72,26 @@
 </div>
 <!-- ./row -->
 <script>
-    $("#title").on('change keyup paste keydown', function(e) {
+    function persian_denied(elename , e , pos , msg){
         var p = /^[\u0600-\u06FF\s]+$/;
         if (e.keyCode != 8) {
             if (! p.test(e.key)) {
                 e.preventDefault();
-                $('#error-title').removeClass('hidden');}
-            else {
-                $('#title').attr({ maxLength : 30 });
-                $('#error-title').addClass('hidden');
+                document.getElementById("error").innerHTML = msg;
+                $('#error').css("top",pos+38).removeClass('hidden');
+            } else {
+                elename.attr({ maxLength : 25 });
+                $('#error').addClass('hidden');
             }
         }
+    }
+    $("#title").on('change keyup paste keydown', function(e) {
+        persian_denied( $("#title") , e , parseInt($("#title").position().top) , "حروف فارسی");
+    });
+    $(function() {
+        $(".form-control").blur(function () {
+            $('#error').addClass('hidden');
+        });
     });
 </script>
 @stop

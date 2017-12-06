@@ -19,7 +19,7 @@
                             <input type="text" id="nameRole" class="form-control" name="nameRole" readonly value="{{ $permission['role'] }}">
                         </div>
                     </div>
-                    <table>
+                    <table id="example">
                     <tr style="height: 50px;">
                         <th style="width: 300px; text-align: right">پست</th>
                         <th style="text-align: right">صفحه</th>
@@ -107,6 +107,8 @@
                         </td>
                     </tr>
                     </table>
+                    <button type="button" id="selectAll" class="btn btn-primary">
+                        <span class="sub"></span> انتخاب همه </button></th>
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
@@ -117,4 +119,12 @@
         </div>
     </div>
 
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script>
+        $("#selectAll").on("click", function () {
+            $("#example tr").each( function() {
+                $(this).find("input").attr('checked', true);
+            });
+        });
+    </script>
 @stop
