@@ -13,7 +13,7 @@
             </div>
             <!-- /.box-header -->
             <div class="box-body pad">
-                {!! Form::open(['url' => ($_SERVER['REQUEST_URI'])  ,  'method' => 'POST' , 'role' => 'form' , 'enctype' => 'multipart/form-data']) !!}
+                {!! Form::open([NULL  ,  'method' => 'POST' , 'role' => 'form' , 'enctype' => 'multipart/form-data']) !!}
                 {{ Form::token() }}
                     <div class="form-group">
                         {{ Form::label('type', 'نوع صفحه') }}

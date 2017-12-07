@@ -156,7 +156,7 @@
 										</div>
 										<div class="product-overlay">
 											<div class="overlay-content">
-												<h2>{{ number_format($product->price) }})</h2>
+												<h2>{{ number_format($product->price) }}</h2>
 												<p>{{ $product->title }}</p>
 												<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
 											</div>

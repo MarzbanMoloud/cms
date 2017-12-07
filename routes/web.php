@@ -7,7 +7,6 @@ Route::post('addRole', 'AdminController@addRole')->name('addRole');
 Route::match(['get', 'post'],'category/{category?}', ['uses'=>'AdminController@category'])->name('category');
 Route::get('contactUs' , 'HomeController@contactUs')->name('contactUs');
 Route::post('copyRole' , 'AdminController@copyRole')->name('copyRole');
-Route::post('createProfile', 'AdminController@createProfile')->name('createProfile');
 Route::get('dashboard' , 'AdminController@dashboard')->name('dashboard');
 Route::get('deleteCat/{category}','AdminController@deleteCat')->name('deleteCat');
 Route::get('deletePage/{page}', 'AdminController@deletePage')->name('deletePage');
@@ -21,7 +20,7 @@ Route::match(['get', 'post'],'page/{page?}',  ['uses' =>  'AdminController@page'
 Route::get('pageList', 'AdminController@pageList')->name('pageList');
 Route::match(['get', 'post'],'post/{post?}' , ['uses' => 'AdminController@post'])->name('post');
 Route::get('postList', 'AdminController@postList')->name('postList');
-Route::get('profile' , 'AdminController@profile')->name('profile');
+Route::match(['get', 'post'] , 'profile' , ['uses'=> 'AdminController@profile'])->name('profile');
 Route::get('promote' , 'AdminController@promote')->name('promote');
 Route::post('register' , 'AccountController@register')->name('register');
 Route::get('removeUser/{user}' , 'AdminController@removeUser')->name('removeUser');

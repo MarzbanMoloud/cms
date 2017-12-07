@@ -13,75 +13,73 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body pad">
-                <form role="form" action="{{$modify==1 ? route('updatePost',['post'=>$post->id]) : route('createProfile')}}" method="post" enctype="multipart/form-data">
-                        {{ csrf_field() }}
+                    {!! Form::open([NULL  ,  'method' => 'POST' , 'role' => 'form' , 'files'=>true]) !!}
+                    {{ Form::token() }}
 
-                        <div class="form-group">
-                            <label for="job">شغل</label>
-                            <input type="text" class="form-control" id="job"  name="job" value="{{$modify==1 ? $post->job : old('job')}}">
-                        </div>
                         @if ($errors->has('job'))
                             <span class="help-block error">
-                            <strong>{{ $errors->first('jib') }}</strong>
-                        </span>
+                                <strong>{{ $errors->first('job') }}</strong>
+                            </span>
                         @endif
-
                         <div class="form-group">
-                            <label for="education">تحصیلات</label>
-                            <input type="text" class="form-control" id="education" name="education" value="{{$modify==1 ? $post->education : old('education')}}">
+                            {{ Form::label('job', 'شغل') }}
+                            {{ Form::text('job', ($profile)? $profile->job : ''  , ['class' => 'form-control' , 'id' => 'job']) }}
                         </div>
+
                         @if ($errors->has('education'))
                             <span class="help-block error">
-                            <strong>{{ $errors->first('education') }}</strong>
-                        </span>
+                                <strong>{{ $errors->first('education') }}</strong>
+                            </span>
                         @endif
-
                         <div class="form-group">
-                            <label for="mail">پست الکترونیک</label>
-                            <input type="email" class="form-control" id="mail" name="mail" value="{{$modify==1 ? $post->mail : old('mail')}}">
+                            {{ Form::label('education', 'تحصیلات') }}
+                            {{ Form::text('education', ($profile)? $profile->education : ''  , ['class' => 'form-control' , 'id' => 'education']) }}
                         </div>
+
                         @if ($errors->has('mail'))
                             <span class="help-block error">
-                            <strong>{{ $errors->first('mail') }}</strong>
-                        </span>
+                                <strong>{{ $errors->first('mail') }}</strong>
+                            </span>
                         @endif
-
                         <div class="form-group">
-                            <label for="address">آدرس</label>
-                            <input type="text" class="form-control" id="address" name="address" value="{{$modify==1 ? $post->address : old('address')}}">
+                            {{ Form::label('mail', 'پست الکترونیک') }}
+                            {{ Form::text('mail', ($profile)? $profile->mail : ''  , ['class' => 'form-control' , 'id' => 'mail']) }}
                         </div>
+
                         @if ($errors->has('address'))
                             <span class="help-block error">
-                                <strong>{{ $errors->first('address') }}</strong>
-                            </span>
+                                    <strong>{{ $errors->first('address') }}</strong>
+                                </span>
                         @endif
-
                         <div class="form-group">
-                            <label for="detail">توضیحات</label>
-                            <textarea class="form-control" id="detail" name="detail" rows="7">
-                                {{$modify==1 ? $post->detail : old('detail')}}
-                            </textarea>
+                            {{ Form::label('address', 'آدرس') }}
+                            {{ Form::text('address', ($profile)? $profile->address : ''  , ['class' => 'form-control' , 'id' => 'address']) }}
                         </div>
+
                         @if ($errors->has('detail'))
                             <span class="help-block error">
-                                <strong>{{ $errors->first('detail') }}</strong>
-                            </span>
+                                    <strong>{{ $errors->first('detail') }}</strong>
+                                </span>
                         @endif
-
                         <div class="form-group">
-                            <label for="avatar">عکس</label>
-                            <input type="file" id="avatar" name="avatar">
+                            {{ Form::label('detail', 'توضیحات') }}
+                            {{ Form::textarea('detail', ($profile)? $profile->detail : '' , ['size' => '30x5' , 'class' => 'form-control']) }}
                         </div>
+
                         @if ($errors->has('avatar'))
                             <span class="help-block error">
-                            <strong>{{ $errors->first('avatar') }}</strong>
-                        </span>
+                                <strong>{{ $errors->first('avatar') }}</strong>
+                            </span>
                         @endif
+                        <div class="form-group">
+                            {{ Form::label('image', 'تصویر') }}
+                            {{ Form::file('avatar') }}
+                        </div>
 
                         <div class="box-footer">
-                            <input type="submit" class="btn btn-primary" name="submit" value="ارسال" />
+                            {{ Form::submit('ارسال', ['class' => 'btn btn-primary' , 'name' => 'submit']) }}
                         </div>
-                </form>
+                    {!! Form::close() !!}
             </div>
         </div>
             <!-- /.box -->

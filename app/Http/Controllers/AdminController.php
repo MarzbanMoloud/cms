@@ -9,11 +9,13 @@ use App\Profile;
 use App\Role;
 use App\Type;
 use App\User;
+use Faker\Provider\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Traits\Permission;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
 
@@ -78,7 +80,7 @@ class AdminController extends Controller
                     'title' => 'required|min:3|max:25',
                     'price' => 'required|max:15',
                     'quantity' => 'required|max:4',
-                    'image' => 'required|mimes:jpeg,png,gif,jpg',
+                    'image' => 'required|mimes:jpeg,png,gif,jpg,bmp',
                     'detail' => 'required',
                 ]);
             if ($post->id){
@@ -286,7 +288,7 @@ class AdminController extends Controller
     {
         $this->validate(request(),
             [
-                'role' => 'required',
+                'role' => 'required|min:3|max:25',
             ]);
         Role::create(['role' => $_POST['role']]);
         $msg = 'گروه جدید ایجاد شد ';
@@ -297,7 +299,7 @@ class AdminController extends Controller
     {
         $this->validate(request(),
             [
-                'roleNew' => 'required',
+                'roleNew' => 'required|min:3|max:25',
             ]);
         $role = Role::where('id' , $_POST['roleCopy'])->first();
         Role::create(['role' => $_POST['roleNew'],
@@ -372,34 +374,45 @@ class AdminController extends Controller
         $msg = 'تغییرات اعمال شد ';
         return redirect()->back()->with(compact('msg'));
     }
-    //Show User Profile Form
-    public function profile()
+    //Show Add Edit Profile
+    public function profile(Request $request)
     {
-        $modify = 0;
-        return view('adminPage.profile' , ['modify' => $modify]);
-    }
-    //Create Profile
-    public function createProfile(Request $request)
-    {
-        $id = \Session::get('id');
-        $is_profile = Profile::where('user_id' , $id)->first();
-        if ($is_profile == ''){
-            $file = $request->file('avatar');
-            $name = time() . '-' . $file->getClientOriginalName();
-            $file->move('photos', $name);
-            $path = "/photos/" . $name;
+            $msg = '';
+            $path = '';
+            $id = \Session::get('id');
+            $profile = Profile::where('user_id' , $id)->first();
+            if ($request->isMethod('post')) {
 
-            Profile::create(['user_id' => $id,
-                            'job' => $_POST['job'] ,
-                            'education' => $_POST['education'],
-                            'mail' => $_POST['mail'],
-                            'address' => $_POST['address'],
-                            'avatar' => $path,
-                            'detail' => $_POST['detail']
-            ]);
-            return redirect()->back();
-        }
-        return redirect()->back();
+                $this->validate($request, [
+                    'avatar' => 'mimes:jpg,jpeg,png,bmp',
+                ]);
+                if (Input::file('avatar')) {
+                    if (($profile) && $profile->avatar != null) {
+                        if (\File::exists(public_path($profile->avatar))) {
+                            unlink(public_path($profile->avatar));
+                        }
+                    }
+                    $file = $request->file('avatar');
+                    $name = time() . '-' . $file->getClientOriginalName();
+                    $file->move('photos', $name);
+                    $path = "/photos/" . $name;
 
+                } elseif ($profile) {
+                    $path = $profile->avatar;
+                }
+
+                if ($profile == null) { $profile = new Profile(); }
+
+                $profile->user_id = $id;
+                $profile->job = $request->job;
+                $profile->education = $request->education;
+                $profile->mail = $request->mail;
+                $profile->address = $request->address;
+                $profile->avatar = $path;
+                $profile->detail = $request->detail;
+                $profile->save();
+                $msg = 'عملیات با موفقیت انجام شد';
+            }
+        return view('adminPage.profile' , ['msg' => $msg , 'profile' => $profile]);
     }
 }

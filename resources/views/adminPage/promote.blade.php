@@ -12,17 +12,21 @@
             {!! Form::open(['route' => 'addRole'  ,  'method' => 'POST' , 'role' => 'form' , 'class' => 'form-horizontal']) !!}
             {{ Form::token() }}
                 <div class="box-body">
-                    @if ($errors->has('role'))
-                        <span class="help-block error">
-                            <strong>{{ $errors->first('role') }}</strong>
-                        </span>
-                    @endif
+
                     <div class="form-group">
                         <div class="col-sm-8" style="float: right;">
                             {{ Form::label('role', 'نام گروه') }}
                         </div>
+
+                        @if ($errors->has('role'))
+                            <span class="help-block error">
+                            <strong>{{ $errors->first('role') }}</strong>
+                        </span>
+                        @endif
+
                         <div class="col-sm-12" style="float: right;">
-                            {{ Form::text('role', null , ['class' => 'form-control']) }}
+                            {{ Form::text('role', null , ['class' => 'form-control' , 'id' => 'role']) }}
+                            <div id="error" data-title="My tooltip"  class="hidden pointer_tooltip"></div>
                         </div>
                     </div>
                 </div>
@@ -102,7 +106,8 @@
                             {{ Form::label('roleNew', 'نام گروه') }}
                         </div>
                         <div class="col-sm-12" style="float: right;">
-                            {{ Form::text('roleNew', null , ['class' => 'form-control']) }}
+                            {{ Form::text('roleNew', null , ['class' => 'form-control' , 'id' => 'roleNew']) }}
+                            <div id="error-new" data-title="My tooltip"  class="hidden pointer_tooltip"></div>
                         </div>
                     </div>
 
@@ -117,5 +122,39 @@
     </div>
 
 
+    <script>
 
+        $("#role").on('change keyup paste keydown', function(e) {
+            var p = /^[\u0600-\u06FF\s]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    document.getElementById("error").innerHTML = 'حروف فارسی';
+                    $('#error').removeClass('hidden');
+                } else {
+                    $("#role").attr({ maxLength : 25 });
+                    $('#error').addClass('hidden');
+                }
+            }
+        });
+        $("#roleNew").on('change keyup paste keydown', function(e) {
+            var p = /^[\u0600-\u06FF\s]+$/;
+            if (e.keyCode != 8) {
+                if (! p.test(e.key)) {
+                    e.preventDefault();
+                    document.getElementById("error-new").innerHTML = 'حروف فارسی';
+                    $('#error-new').removeClass('hidden');
+                } else {
+                    $("#roleNew").attr({ maxLength : 25 });
+                    $('#error-new').addClass('hidden');
+                }
+            }
+        });
+
+        $(function() {
+            $(".form-control").blur(function () {
+                $('#error').addClass('hidden');
+            });
+        });
+    </script>
 @stop

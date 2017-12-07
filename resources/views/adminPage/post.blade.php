@@ -13,7 +13,7 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body pad">
-                    {!! Form::open(['url' => ($_SERVER['REQUEST_URI'])  ,  'method' => 'POST' , 'role' => 'form' , 'enctype' => 'multipart/form-data']) !!}
+                    {!! Form::open([NULL  ,  'method' => 'POST' , 'role' => 'form' , 'enctype' => 'multipart/form-data']) !!}
                     {{ Form::token() }}
 
                         <div class="form-group">
@@ -57,6 +57,11 @@
                             {{ Form::text('quantity', ($post)? $post->quantity : ''  , ['class' => 'form-control num_must' , 'id' => 'quantity']) }}
                         </div>
 
+                        @if ($errors->has('image'))
+                            <span class="help-block error">
+                                    <strong>{{ $errors->first('image') }}</strong>
+                                </span>
+                        @endif
                         <div class="form-group">
                             {{ Form::label('image', 'تصویر شاخص') }}
                             {{ Form::file('image') }}
