@@ -7,6 +7,7 @@ Route::post('addRole', 'AdminController@addRole')->name('addRole');
 Route::match(['get', 'post'],'category/{category?}', ['uses'=>'AdminController@category'])->name('category');
 Route::get('contactUs' , 'HomeController@contactUs')->name('contactUs');
 Route::post('copyRole' , 'AdminController@copyRole')->name('copyRole');
+Route::post('resetPass' , 'AdminController@resetPass')->name('resetPass');
 Route::get('dashboard' , 'AdminController@dashboard')->name('dashboard');
 Route::get('deleteCat/{category}','AdminController@deleteCat')->name('deleteCat');
 Route::get('deletePage/{page}', 'AdminController@deletePage')->name('deletePage');

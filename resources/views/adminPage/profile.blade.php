@@ -5,7 +5,7 @@
         <div class="col-md-12">
             <div class="box box-info">
                 <div class="box-header with-border">
-                    <br>
+                    ایجاد/ویرایش پروفایل
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                         <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
@@ -74,6 +74,9 @@
                         <div class="form-group">
                             {{ Form::label('image', 'تصویر') }}
                             {{ Form::file('avatar') }}
+                            @if ($profile and $profile->avatar)
+                                <img src="{{ asset($profile->avatar) }}" alt="تصویر پروفایل" style="width: 50px;" class="img-thumbnail">
+                            @endif
                         </div>
 
                         <div class="box-footer">
@@ -85,6 +88,55 @@
             <!-- /.box -->
     </div>
         <!-- /.col-->
+        <div class="col-md-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                   ریست رمز عبور
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <!-- form start -->
+                {!! Form::open(['route' => 'resetPass' ,'role' => 'form' ,'method' => 'Post' , 'class' => 'form-horizontal']) !!}
+                {{ Form::token() }}
+                <div class="box-body">
+                    <div class="form-group">
+                        <div class="col-sm-4" style="float: right;">
+                            {{ Form::label('role', 'رمز عبور قبلی') }}
+                            {{ Form::text('oldPass', null , ['class' => 'form-control' , 'id' => 'oldPass']) }}
+                        </div>
+                        <div class="col-sm-4" style="float: right;">
+                            {{ Form::label('role', 'رمز عبور جدید') }}
+                            {{ Form::text('newPass', null , ['class' => 'form-control' , 'id' => 'newPass']) }}
+                        </div>
+                        <div class="col-sm-4" style="float: right;">
+                            {{ Form::label('role', 'تکرار رمز عبور جدید') }}
+                            {{ Form::text('newPassConfirmation', null , ['class' => 'form-control' , 'id' => 'newPassConfirmation']) }}
+                        </div>
+                    </div>
+                    <span id='confirmation'></span>
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    {{ Form::submit('ریست', ['class' => 'btn btn-primary']) }}
+                </div>
+                <!-- /.box-footer -->
+                {!! Form::close() !!}
+            </div>
+        </div>
+    </div>
 </div>
     <!-- ./row -->
+    <script>
+        $(function(){
+            $('#newPass, #newPassConfirmation').on('keyup', function () {
+                if ($('#newPass').val() == $('#newPassConfirmation').val()) {
+                    $('#confirmation').html('فیلدهای کلمه عبور یکسان هستند').css('color', 'green');
+                } else
+                    $('#confirmation').html('فیلد های کلمه عبور یکسان نیستند').css('color', 'red');
+            });
+        });
+    </script>
 @stop

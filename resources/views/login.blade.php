@@ -4,7 +4,7 @@
 	<div class="containe">
 		<div class="row">
 			<div class="col-sm-4 col-sm-offset-1">
-				<div class="login-form"><!--login form-->
+				<div class="form-group"><!--login form-->
 					<h2 style="text-align: right;">ورود به حساب کاربری</h2>
 					{!! Form::open(['route' => 'login', 'method' => 'POST']) !!}
 
@@ -14,14 +14,17 @@
 							{{ $errors->first('ncode') }}
 							</span>
 						@endif
-					{{ Form::text('ncode', null, ['class' => 'right-text-input', 'placeholder' => 'کد ملی', 'value' => old('ncode')]) }}
-
+					{{ Form::text('ncode', null, ['class' => 'right-text-input form-control', 'placeholder' => 'کد ملی', 'value' => old('ncode')]) }}
+                    <br>
 						@if ($errors->has('pass'))
 							<span class="help-block error">
 							{{ $errors->first('pass') }}
 							</span>
 						@endif
-					{{ Form::password('pass', ['class' => 'right-text-input', 'placeholder' => 'رمز عبور']) }}
+					{{ Form::password('pass', ['class' => 'right-text-input form-control', 'placeholder' => 'رمز عبور']) }}
+
+                    {{ Form::checkbox('remember_me', 1 , true , ['class' => 'form-control']) }}
+
 					{{ Form::submit('Login', ['class' => 'btn btn-default pull-right']) }}
 
 					{!! Form::close() !!}

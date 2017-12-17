@@ -17,9 +17,13 @@
     <!-- AdminLTE Skins. Choose a skin from the css/skins
          folder instead of downloading all of them to reduce the load. -->
     <link rel="stylesheet" href="{{ asset('admin/dist/css/skins/_all-skins.min.css') }}">
+    <!-- DataTables -->
+    <link rel="stylesheet" href="../../bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css">
+
     <!-- Show Error Message -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <!-- Show Error Message -->
+
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -266,12 +270,14 @@
             <ul class="sidebar-menu" data-widget="tree">
                 <li class="header">منو </li>
 
-                <li>
-                    <a href="{{ route('dashboard') }}">
-                        <i class="fa fa-dashboard"></i>
-                        <span>داشبورد</span>
-                    </a>
-                </li>
+                @if($dashboard == '1')
+                    <li>
+                        <a href="{{ route('dashboard') }}">
+                            <i class="fa fa-dashboard"></i>
+                            <span>داشبورد</span>
+                        </a>
+                    </li>
+                @endif
 
                 @if($manage_category == '1')
                     <li>
@@ -281,7 +287,7 @@
                         </a>
                     </li>
                 @endif
-
+                @if($create_pages == 1 or $del_pages == 1 or $edit_pages == 1)
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-file-o"></i>
@@ -290,11 +296,17 @@
 
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ route('page') }}"><i class="fa fa-circle-o"></i> افزودن صفحه</a></li>
-                        <li><a href="{{ route('pageList') }}"><i class="fa fa-circle-o"></i> مدیریت صفحات</a></li>
+                        @if($create_pages == 1)
+                            <li><a href="{{ route('page') }}"><i class="fa fa-circle-o"></i> افزودن صفحه</a></li>
+                        @endif
+                        @if($del_pages == 1 or $edit_pages == 1)
+                            <li><a href="{{ route('pageList') }}"><i class="fa fa-circle-o"></i> مدیریت صفحات</a></li>
+                        @endif
                     </ul>
                 </li>
+                @endif
 
+                @if($create_posts == 1 or $del_posts == 1 or $edit_posts == 1)
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-files-o"></i>
@@ -304,11 +316,16 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="{{ route('post') }}"><i class="fa fa-circle-o"></i> افزودن پست</a></li>
+                        @if($create_posts == 1)
+                            <li><a href="{{ route('post') }}"><i class="fa fa-circle-o"></i> افزودن پست</a></li>
+                        @endif
+                        @if($del_posts == 1 or $edit_posts == 1)
                         <li><a href="{{ route('postList') }}"><i class="fa fa-circle-o"></i> مدیریت پست ها</a></li>
+                        @endif
                     </ul>
                 </li>
-                @if($list_user == 1 or $create_user == 1 and $promote_user == 1)
+                @endif
+                @if($manage_user == 1 or $create_user == 1 or $promote_user == 1)
                 <li class="treeview">
                     <a href="#">
                         <i class="fa fa-users"></i>
@@ -318,8 +335,8 @@
                         </span>
                     </a>
                     <ul class="treeview-menu">
-                        @if($list_user == 1)
-                            <li><a href="{{ route('userList') }}"><i class="fa fa-circle-o"></i> لیست کاربران</a></li>
+                        @if($manage_user == 1)
+                            <li><a href="{{ route('userList') }}"><i class="fa fa-circle-o"></i> مدیریت کاربران</a></li>
                         @endif
                         @if($create_user == 1)
                             <li><a href="{{ route('user') }}"><i class="fa fa-circle-o"></i> ایجاد کاربر</a></li>
@@ -357,13 +374,6 @@
             <h1 style="font-family: 'B Yekan Regular'">
                 @yield('title')
             </h1>
-        </section>
-        <section class="content-header">
-            <ol class="breadcrumb">
-                <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                <li><a href="#">Examples</a></li>
-                <li class="active">Blank page</li>
-            </ol>
         </section>
         <br>
         <!-- Main content -->

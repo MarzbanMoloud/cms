@@ -18,12 +18,12 @@
 
                         <div class="form-group">
                             {{ Form::label('cat', ' دسته بندی') }}
-                            {{ Form::select('cat' , $categories , null ,['class' => 'form-control'])  }}
+                            {{ Form::select('cat' , $categories , ($post)? $post->category_id : null  ,['class' => 'form-control'])  }}
                         </div>
 
                         <div class="form-group">
                             {{ Form::label('discount', 'تخفیف') }}
-                            {{  Form::select('discount' , $discounts , null ,['class' => 'form-control']) }}
+                            {{  Form::select('discount' , $discounts , ($post)? $post->discount_id : null ,['class' => 'form-control']) }}
                         </div>
 
                         @if ($errors->has('title'))
@@ -65,6 +65,9 @@
                         <div class="form-group">
                             {{ Form::label('image', 'تصویر شاخص') }}
                             {{ Form::file('image') }}
+                            @if ($post->photo)
+                                <img src="{{ asset($post->photo) }}" alt="تصویر شاخص" style="width: 50px;" class="img-thumbnail">
+                            @endif
                         </div>
 
                         @if ($errors->has('detail'))
@@ -79,9 +82,7 @@
 
                         <div class="box-footer">
                             {{ Form::submit(' پیش نویس' , ['class' => 'btn btn-primary' , 'name' => 'draft']) }}
-                            @if($publish_posts == 1)
-                                {{ Form::submit('انتشار', ['class' => 'btn btn-primary' , 'name' => 'publish']) }}
-                            @endif
+                            {{ Form::submit('انتشار', ['class' => 'btn btn-primary' , 'name' => 'publish']) }}
                         </div>
                     {!! Form::close() !!}
             </div>

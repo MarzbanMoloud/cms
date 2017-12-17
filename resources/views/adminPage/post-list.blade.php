@@ -6,54 +6,60 @@
             <div class="box">
                 <div class="box-header">
                     <div class="box-tools">
-                        <div class="input-group input-group-sm" style="width: 150px;">
-                            <input type="text" name="table_search" class="form-control pull-right" placeholder="جستجو">
-                            <div class="input-group-btn">
-                                <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
+                        {!! Form::open([NULL ,  'method' => 'GET' , 'role' => 'form']) !!}
+                            <div class="input-group input-group-sm" style="width: 150px;">
+                                {{ Form::text('search', null  , ['class' => 'form-control pull-right' , 'placeholder' => 'جستجو']) }}
+                                <div class="input-group-btn">
+                                    {{ Form::button('<i class="fa fa-search"></i>', ['class' => 'btn btn-default btn-sm', 'type' => 'submit']) }}
+                                </div>
                             </div>
-                        </div>
+                        {!! Form::close() !!}
                     </div>
                 </div>
                 <br>
                 <!-- /.box-header -->
                 <div class="box-body">
-                    <table class="table table-bordered">
-                        <tr>
-                            <th style="text-align: right">عنوان پست</th>
-                            <th style="text-align: right">تاریخ ایجاد</th>
-                            <th style="text-align: right">آخرین ویرایش</th>
-                            <th style="text-align: right">وضعیت</th>
-                            <th style="text-align: right">حذف</th>
-                            <th style="text-align: right">ویرایش</th>
-                        </tr>
-                        @foreach($posts as $post)
+                    <table class="table table-bordered table-striped">
+                        <thead>
                             <tr>
-                                <td>{{$post->title}}</td>
-                                <td>{{$post->created_at}}</td>
-                                <td>{{$post->updated_at}}</td>
-                                <td>
-                                    {{ ($post->published == '0') ?  'پیش نویس':'منتشر شده' }}
-                                </td>
-                                @if($del_posts == 1)
-                                    <td>
-                                        <a href="{{route('deletePost',['post'=>$post->id])}}"><i class="fa fa-trash-o"></i></a>
-                                    </td>
-                                @elseif($del_posts == 0)
-                                    <td>
-                                        <a href="{{route('deletePost',['post'=>$post->id])}}" style=" pointer-events: none;color: grey;"><i class="fa fa-trash-o"></i></a>
-                                    </td>
-                                @endif
-                                @if($edit_posts == 1)
-                                    <td>
-                                        <a href="/post/{{$post->id}}"><i class="fa fa-edit"></i></a>
-                                    </td>
-                                @elseif($edit_posts == 0)
-                                    <td>
-                                        <a href="/post/{{$post->id}}" style=" pointer-events: none;color: grey;"><i class="fa fa-edit"></i></a>
-                                    </td>
-                                @endif
+                                <th style="text-align: right">@sortablelink('title' , 'عنوان پست')</th>
+                                <th style="text-align: right">@sortablelink('created_at' , 'تاریخ ایجاد')</th>
+                                <th style="text-align: right">@sortablelink('updated_at' , 'آخرین ویرایش')</th>
+                                <th style="text-align: right">وضعیت</th>
+                                <th style="text-align: right">حذف</th>
+                                <th style="text-align: right">ویرایش</th>
                             </tr>
-                        @endforeach
+                        </thead>
+                        <tbody>
+                            @foreach($posts as $post)
+                                <tr>
+                                    <td>{{ $post->title }}</td>
+                                    <td>{{ jDate($post->created_at)->format('datetime') }}</td>
+                                    <td>{{ jDate($post->updated_at)->format('datetime') }}</td>
+                                    <td>
+                                        {{ ($post->published == '0') ?  'پیش نویس':'منتشر شده' }}
+                                    </td>
+                                    @if($del_posts == 1)
+                                        <td>
+                                            <a href="{{route('deletePost',['post'=>$post->id])}}"><i class="fa fa-trash-o"></i></a>
+                                        </td>
+                                    @elseif($del_posts == 0)
+                                        <td>
+                                            <a href="{{route('deletePost',['post'=>$post->id])}}" style=" pointer-events: none;color: grey;"><i class="fa fa-trash-o"></i></a>
+                                        </td>
+                                    @endif
+                                    @if($edit_posts == 1)
+                                        <td>
+                                            <a href="/post/{{$post->id}}"><i class="fa fa-edit"></i></a>
+                                        </td>
+                                    @elseif($edit_posts == 0)
+                                        <td>
+                                            <a href="/post/{{$post->id}}" style=" pointer-events: none;color: grey;"><i class="fa fa-edit"></i></a>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        <tbody>
                     </table>
                 </div>
                 <!-- /.box-body -->

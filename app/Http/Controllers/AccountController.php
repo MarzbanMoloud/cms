@@ -28,7 +28,7 @@ class AccountController extends Controller
                 'password' => 'required|confirmed'
             ]);
 
-        $hashedPassword = Hash::make(request('password'));
+        $hashedPassword =  Hash::make(request('password'));
         $user = User::create([
             'role_id' => 2 ,
             'fname' => $request->fname,
@@ -62,19 +62,43 @@ class AccountController extends Controller
                 'ncode' => 'required|min:10|max:10',
                 'pass' => 'required',
             ]);
-        if (!Auth::attempt(['national_code' => $request->ncode ,'password' => $request->pass])) {
+        $remember_me = $request->has('remember_me') ? true : false;
+        if (!Auth::attempt(['national_code' => $request->input('ncode') ,'password' => $request->input('pass')] , $remember_me)) {
             return back();
         }
-        $loginUser = User::where('national_code' , \request('ncode'))->first();
-        \Session::put('id', $loginUser['id']);
-        \Session::put('username', $loginUser['username']);
-        \Session::put('islogin', true);
+
+        $pLoginUser = User::where('national_code' , \request('ncode'))->with('role')->first();
+
+        //Session for user login
+        Session::put('id', $pLoginUser['id']);
+        Session::put('username', $pLoginUser['username']);
+        Session::put('islogin', true);
+
+        //Session for permission user login
+        Session::put('permissions' , [
+            'dashboard' => $pLoginUser['role']['dashboard'],
+
+            'edit_posts' => $pLoginUser['role']['edit_posts'],
+            'del_posts' => $pLoginUser['role']['del_posts'],
+            'create_posts' => $pLoginUser['role']['create_posts'],
+
+            'edit_pages' =>  $pLoginUser['role']['edit_pages'],
+            'del_pages' => $pLoginUser['role']['del_pages'],
+            'create_pages' => $pLoginUser['role']['create_pages'],
+
+            'manage_category' => $pLoginUser['role']['manage_category'],
+
+            'create_user' => $pLoginUser['role']['create_user'],
+            'promote_user' => $pLoginUser['role']['promote_user'],
+            'manage_user' => $pLoginUser['role']['manage_user'],
+        ]);
+        //return Session::all();
         return redirect()->home();
     }
     //Log out
     public function destroy(Request $request)
     {
-        auth()->logout();
+        Auth::logout();
         $request->session()->flush();
         return redirect()->home();
     }

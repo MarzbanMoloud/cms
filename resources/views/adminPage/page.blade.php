@@ -5,7 +5,7 @@
     <div class="col-md-12">
         <div class="box box-info">
             <div class="box-header with-border">
-                <br>
+                افزودن/ویرایش صفحه
                 <div class="box-tools pull-right">
                     <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-remove"></i></button>
@@ -17,7 +17,7 @@
                 {{ Form::token() }}
                     <div class="form-group">
                         {{ Form::label('type', 'نوع صفحه') }}
-                        {{ Form::select('type' , $types , null ,['class' => 'form-control'])  }}
+                        {{ Form::select('type' , $types , ($page)? $page->type_id : null ,['class' => 'form-control'])  }}
                     </div>
 
                     @if ($errors->has('title'))
@@ -40,11 +40,11 @@
                     <!-- CKEditor start -->
                     <script type="text/javascript" src="{{ asset('ckeditor/ckeditor/ckeditor.js') }}"></script>
                     <script type="text/javascript" src="{{ asset('/ckeditor/ckfinder/ckfinder.js') }}"></script>
-                    <script src="//cdn.ckeditor.com/4.6.2/standard/ckeditor.js"></script>
                     <script>
                          CKEDITOR.replace('ckeditor' ,
                                 {
                                     language: 'fa',
+                                    height : '600px',
                                     filebrowserBrowseUrl: "{{ asset('ckeditor/ckfinder/ckfinder.html?Type=Files') }}",
                                     filebrowserImageBrowseUrl: "{{ asset('ckeditor/ckfinder/ckfinder.html?Type=Images') }}",
                                     filebrowserFlashBrowseUrl: "{{ asset('ckeditor/ckfinder/ckfinder.html?Type=Flash') }}",
@@ -59,9 +59,7 @@
                     <br>
                     <div class="box-footer">
                         {{ Form::submit(' پیش نویس' , ['class' => 'btn btn-primary' , 'name' => 'draft']) }}
-                        @if($publish_pages == 1)
-                            {{ Form::submit('انتشار', ['class' => 'btn btn-primary' , 'name' => 'publish']) }}
-                        @endif
+                        {{ Form::submit('انتشار', ['class' => 'btn btn-primary' , 'name' => 'publish']) }}
                     </div>
                 {!! Form::close() !!}
             </div>
@@ -94,4 +92,5 @@
         });
     });
 </script>
+
 @stop

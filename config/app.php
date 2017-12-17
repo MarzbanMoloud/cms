@@ -163,6 +163,10 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
+        Anetwork\Validation\PersianValidationServiceProvider::class,
+        Kyslik\ColumnSortable\ColumnSortableServiceProvider::class,
+        Morilog\Jalali\JalaliServiceProvider::class,
+
         /*
          * Package Service Providers...
          */
@@ -227,6 +231,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Form' => Collective\Html\FormFacade::class,
         'HTML' => Collective\Html\HtmlFacade::class,
+        'jDate' => Morilog\Jalali\Facades\jDate::class,
     ],
 
 ];

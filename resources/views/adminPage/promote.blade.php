@@ -61,7 +61,6 @@
                                 {{ Form::select('role' , $roles , null ,['class' => 'form-control'])  }}
                             </div>
                         </div>
-
                     </div>
                     <br>
                     <!-- /.box-body -->
@@ -74,7 +73,7 @@
                 <br>
                 <br>
             </div>
-        </div>
+    </div>
 
     <div class="col-md-4" style="float: right;">
         <!-- Horizontal Form -->

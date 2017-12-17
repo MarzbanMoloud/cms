@@ -4,8 +4,47 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "66b590000d3dcb0604f287e1d16bcab8",
+    "content-hash": "2e5d07db751f3044f4c2c5b1e718163e",
     "packages": [
+        {
+            "name": "anetwork/validation",
+            "version": "v2.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/anetwork/validation.git",
+                "reference": "cea8cb3b1f3419ae3e97fc9481f7b7a48964358c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/anetwork/validation/zipball/cea8cb3b1f3419ae3e97fc9481f7b7a48964358c",
+                "reference": "cea8cb3b1f3419ae3e97fc9481f7b7a48964358c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^5.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "3.7.*"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Anetwork\\Validation\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Shahrokh Niakan",
+                    "email": "shahrokhniakan@gmail.com"
+                }
+            ],
+            "description": "Laravel persian validation",
+            "time": "2017-06-10T17:23:57+00:00"
+        },
         {
             "name": "ckeditor/ckeditor",
             "version": "4.7.3",
@@ -410,6 +449,57 @@
                 }
             ],
             "time": "2015-04-20T18:58:01+00:00"
+        },
+        {
+            "name": "kyslik/column-sortable",
+            "version": "5.4.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kyslik/column-sortable.git",
+                "reference": "fa7635d2ce28faf2599bf752428acc64437acf7c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kyslik/column-sortable/zipball/fa7635d2ce28faf2599bf752428acc64437acf7c",
+                "reference": "fa7635d2ce28faf2599bf752428acc64437acf7c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/database": "5.4.*",
+                "illuminate/support": "5.4.*",
+                "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "orchestra/testbench": "3.4.*",
+                "phpunit/phpunit": "~5.0"
+            },
+            "type": "package",
+            "autoload": {
+                "psr-4": {
+                    "Kyslik\\ColumnSortable\\": "src/ColumnSortable/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Martin Kiesel",
+                    "email": "martin.kiesel@gmail.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Package for handling column sorting in Laravel 5.4",
+            "keywords": [
+                "column",
+                "laravel",
+                "one-to-one",
+                "sort",
+                "sortable",
+                "sorting"
+            ],
+            "time": "2017-11-29T12:29:06+00:00"
         },
         {
             "name": "laravel/framework",
@@ -817,6 +907,71 @@
                 "psr-3"
             ],
             "time": "2017-06-19T01:22:40+00:00"
+        },
+        {
+            "name": "morilog/jalali",
+            "version": "v2.3.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/morilog/jalali.git",
+                "reference": "6a2a692fde8bb4695acf45a654bad609e402040a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/morilog/jalali/zipball/6a2a692fde8bb4695acf45a654bad609e402040a",
+                "reference": "6a2a692fde8bb4695acf45a654bad609e402040a",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^5.0",
+                "nesbot/carbon": "^1.21",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Morilog\\Jalali\\JalaliServiceProvider"
+                    ],
+                    "aliases": {
+                        "jDate": "Morilog\\Jalali\\Facades\\jDate"
+                    }
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Morilog\\Jalali\\": "src"
+                },
+                "files": [
+                    "src/helpers.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Milad Rey",
+                    "email": "miladr@gmail.com"
+                },
+                {
+                    "name": "Morteza Parvini",
+                    "email": "m.parvini@outlook.com"
+                }
+            ],
+            "description": "eThis Package helps developers to easily work with Jalali (Shamsi or Iranian) dates in Laravel 5 applications, based on Jalali (Shamsi) DateTime class.",
+            "keywords": [
+                "Jalali",
+                "date",
+                "datetime",
+                "laravel",
+                "morilog"
+            ],
+            "time": "2017-09-06T19:39:20+00:00"
         },
         {
             "name": "mtdowling/cron-expression",

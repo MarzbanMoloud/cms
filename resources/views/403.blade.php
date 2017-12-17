@@ -2,36 +2,25 @@
 @section('title','403')
 @section('content')
 
+    <!-- Main content -->
+    <section class="content">
+        <div class="error-page">
+            <h2 class="headline text-yellow"> 403 </h2>
 
+            <div class="error-content">
+                <h3><i class="fa fa-warning text-yellow"></i> خطا! عدم دسترسی</h3>
 
+                <p>
+                    متاسفانه شما به محتوای این صفحه دسترسی ندارید
+                    شما می توانید به   <a href="{{ route('dashboard') }}">داشبورد</a> بازگردید
+                </p>
 
-    <div class="container">
-        <div class="push-up blocks-spacer">
-            <div class="row">
-
-                <!--  ==========  -->
-                <!--  = Main content =  -->
-                <!--  ==========  -->
-                <section class="span12">
-
-                    <p class="container-404" >
-                       <h1 style="text-align: center">خطای 403</h1>
-                    </p>
-
-                    <hr/>
-
-                    <p style="text-align: center">
-                      شما مجوز دسترسی به این صفحه را ندارید
-                    </p>
-                    <p style="text-align: center">
-                        به <a href="{{route('home')}}">خانه</a> باز گردید
-                    </p>
-
-
-                </section> <!-- /main content -->
             </div>
+            <!-- /.error-content -->
         </div>
-    </div> <!-- /container -->
+        <!-- /.error-page -->
+    </section>
+    <!-- /.content -->
 
 
 @stop

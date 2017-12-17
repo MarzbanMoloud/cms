@@ -3,9 +3,12 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Kyslik\ColumnSortable\Sortable;
 
 class Post extends Model
 {
+    use Sortable;
+    public $sortable = [ 'title', 'created_at', 'updated_at'];
     protected $fillable = [
         'category_id', 'discount_id', 'group_id', 'title','detail','quantity','price','photo','published','user_id'
     ];

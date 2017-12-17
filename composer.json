@@ -6,10 +6,13 @@
     "type": "project",
     "require": {
         "php": ">=5.6.4",
+        "Anetwork/Validation": "^2.1",
         "ckeditor/ckeditor": "^4.7",
+        "kyslik/column-sortable": "^5.4",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "~1.0",
         "laravelcollective/html": "^5.4",
+        "morilog/jalali": "^2.3",
         "tsawler/laravel-filemanager": "^0.6.2",
         "unisharp/laravel-ckeditor": "^4.6",
         "unisharp/laravel-filemanager": "~1.8"

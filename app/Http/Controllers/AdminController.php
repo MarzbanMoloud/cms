@@ -9,14 +9,15 @@ use App\Profile;
 use App\Role;
 use App\Type;
 use App\User;
+use Crypt;
 use Faker\Provider\File;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Traits\Permission;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -27,22 +28,28 @@ class AdminController extends Controller
     }
 
     //Get Permission of Login_user
-    use Permission;
 
     //Dashboard
     public function dashboard(Request $request)
     {
-        return view('adminPage.dashboard');
+        $pIsLogin = Session::get('permissions');
+        if( $pIsLogin['dashboard'] == 1){
+            return view('adminPage.dashboard');
+        }else{
+            return view('403');
+        }
+
     }
     //Show Add Update category
-    public function category(Category $category = null  , Request $request)
+    public function category(Category $category = null , Request $request)
     {
-        if(Auth::user()->role->manage_category==1) {
+        $pIsLogin = Session::get('permissions');
+        if($pIsLogin['manage_category'] == 1) {
             $msg = '';
             if ($request->isMethod('post')) {
                 $this->validate(request(),
                     [
-                        'cat' => 'required|min:3|max:25',
+                        'cat' => 'required|min:3|max:25|persian_alpha',
                     ]);
                 if ($category->id) {
                     $category->update(['catName' => $request->cat]);
@@ -52,7 +59,11 @@ class AdminController extends Controller
                     $msg = 'دسته بندی با موفقیت ثبت شد';
                 }
             }
-            $categories = Category::paginate(10);
+            if (Input::get('search')){
+                $categories = Category::where('catName' , 'like', '%' . Input::get('search') . '%' )->sortable()->paginate(10);
+            }else{
+                $categories = Category::sortable()->paginate(10);
+            }
             return view('adminPage.category', ['category' => $category, 'categories' => $categories, 'msg' => $msg]);
         }
         else{
@@ -62,27 +73,31 @@ class AdminController extends Controller
     //delete category
     public function deleteCat(Category $category)
     {
-        $category->delete();
-        $msg = 'حذف با موفقیت انجام شد ';
-        return redirect()->back()->with(compact('msg'));
+        $pIsLogin = Session::get('permissions');
+        if(($pIsLogin['manage_category'] == 1) and ($category != null)) {
+            $category->delete();
+            $msg = 'حذف با موفقیت انجام شد ';
+            return redirect()->back()->with(compact('msg'));
+        }else{
+            return view('403');
+        }
     }
     //Show Add Update Post
     public function post(Post $post = null  , Request $request)
     {
         $msg = '';
-        $permission = $this->permissionsLoginUser();
-        $publish_posts = $permission['role']['publish_posts'];
+        $pIsLogin = Session::get('permissions');
         $categories = Category::pluck( 'catName' , 'id');
         $discounts = Discount::pluck( 'discountPercent', 'id');
         if ($request->isMethod('post')){
             $this->validate(request(),
                 [
-                    'title' => 'required|min:3|max:25',
+                    'title' => 'required|min:3|max:25|persian_alpha',
                     'price' => 'required|max:15',
                     'quantity' => 'required|max:4',
-                    'image' => 'required|mimes:jpeg,png,gif,jpg,bmp',
                     'detail' => 'required',
                 ]);
+
             if ($post->id){
                 if ($request->hasFile('image'))
                 {
@@ -94,17 +109,23 @@ class AdminController extends Controller
                     $name = time() . '-' . $file->getClientOriginalName();
                     $file->move('photos', $name);
                     $path = "/photos/" . $name;
-                    $price = str_replace(',', '', $request->price);
-                    if (isset($_POST['draft'])) {
-                        $post->update([ 'discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail, 'published' => '0']);
-                        $msg = 'پست ویرایش و به عنوان پیش نویس ثبت شد';
-                    }elseif(isset($_POST['publish'])){
-                        $post->update(['discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail, 'published' => '1']);
-                        $msg = 'پست ویرایش و منتشر شد';
-                    }
+                }else{
+                    $path = $post->photo;
+                }
+                $price = str_replace(',', '', $request->price);
+                if (isset($_POST['draft'])) {
+                    $post->update([ 'discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail, 'published' => '0']);
+                    $msg = 'پست ویرایش و به عنوان پیش نویس ثبت شد';
+                }elseif(isset($_POST['publish'])){
+                    $post->update(['discount_id' => $request->discount, 'category_id' => $request->cat, 'title' => $request->title, 'price' => $price, 'quantity' => $request->quantity, 'photo' => $path, 'detail' => $request->detail, 'published' => '1']);
+                    $msg = 'پست ویرایش و منتشر شد';
                 }
             }else{
-                $id = \Session::get('id');
+                $this->validate(request(),
+                    [
+                        'image' => 'required|mimes:jpeg,png,gif,jpg,bmp',
+                    ]);
+                $id = Session::get('id');
                 $file = $request->file('image');
                 $name = time() . '-' . $file->getClientOriginalName();
                 $file->move('photos', $name);
@@ -119,36 +140,56 @@ class AdminController extends Controller
                 }
             }
         }
-        return view('adminPage.post', ['post' => $post , 'categories' => $categories, 'discounts' => $discounts, 'publish_posts' => $publish_posts , 'msg' => $msg]);
+
+        if (($pIsLogin['edit_posts'] == 1) and ($post->id != null) ){
+            return view('adminPage.post', ['post' => $post , 'categories' => $categories, 'discounts' => $discounts, 'msg' => $msg]);
+        }elseif ($pIsLogin['create_posts'] == 1 and ($post->id == null)){
+            return view('adminPage.post', ['post' => $post , 'categories' => $categories, 'discounts' => $discounts, 'msg' => $msg]);
+        }else{
+            return view('403');
+        }
     }
-    //Show post list = managment post
+    //Managment post
     public function postList()
     {
-        $permission = $this->permissionsLoginUser();
-        $edit_posts = $permission['role']['edit_posts'];
-        $del_posts = $permission['role']['del_posts'];
-
-        $posts = Post::paginate(10);
-        return view('adminPage.post-list', ['posts' => $posts , 'edit_posts' => $edit_posts , 'del_posts' => $del_posts]);
+        $pIsLogin = Session::get('permissions');
+        $edit_posts = $pIsLogin['edit_posts'];
+        $del_posts = $pIsLogin['del_posts'];
+        if ($edit_posts == 1 or $del_posts == 1) {
+            if (Input::get('search')) {
+                $posts = Post::where('title' , 'like', '%' . Input::get('search') . '%' )
+                    ->orWhere('detail' , 'like', '%' . Input::get('search') . '%' )
+                    ->sortable()->paginate(10);
+            }else{
+                $posts = Post::sortable()->paginate(10);
+            }
+            return view('adminPage.post-list', ['posts' => $posts, 'edit_posts' => $edit_posts, 'del_posts' => $del_posts]);
+        }else{
+            return view('403');
+        }
     }
     //Delete post
     public function deletePost(Post $post)
     {
-        $post->delete();
-        $msg = 'حذف با موفقیت انجام شد ';
-        return redirect()->back()->with(compact('msg'));
+        $pIsLogin = Session::get('permissions');
+        if (($pIsLogin['del_posts'] == 1) and ($post != null)) {
+            $post->delete();
+            $msg = 'حذف با موفقیت انجام شد ';
+            return redirect()->back()->with(compact('msg'));
+        }else{
+            return view('403');
+        }
     }
     //Page
     public function page(Page $page = null , Request $request)
     {
         $msg = '';
-        $permission = $this->permissionsLoginUser();
-        $publish_pages = $permission['role']['publish_pages'];
-        $types = Type::pluck('typeName' , 'id');
+        $pIsLogin = Session::get('permissions');
+        $types = Page::getTypes();
         if ($request->isMethod('post')){
             $this->validate(request(),
                 [
-                    'title' => 'required|max:25',
+                    'title' => 'required|max:25|persian_alpha',
                     'ckeditor' => 'required',
                 ]);
             if ($page->id){
@@ -160,7 +201,7 @@ class AdminController extends Controller
                     $msg = 'صفحه ویرایش و منتشر شد';
                 }
             }else{
-                $id = \Session::get('id');
+                $id = Session::get('id');
                 if (isset($_POST['draft'])){
                     Page::create(['user_id' => $id ,'type_id' => $_POST['type'] ,'title' => $_POST['title'] , 'body' => $_POST['ckeditor'] , 'published' => '0' ]);
                     $msg = 'صفحه جدید به عنوان پیش نویس ثبت شد';
@@ -170,37 +211,65 @@ class AdminController extends Controller
                 }
             }
         }
-        return view('adminPage.page' , ['types' => $types , 'publish_pages' => $publish_pages , 'page' => $page , 'msg' => $msg]);
+        if (($pIsLogin['edit_pages'] == 1) and ($page->id != null) ){
+            return view('adminPage.page' , ['types' => $types , 'page' => $page , 'msg' => $msg]);
+        }elseif (($pIsLogin['create_pages'] == 1) and ($page->id == null) ){
+            return view('adminPage.page' , ['types' => $types , 'page' => $page , 'msg' => $msg]);
+        }else{
+            return view('403');
+        }
+
     }
 
     //Show page list = managment page
     public function pageList()
     {
-        $permission = $this->permissionsLoginUser();
-        $edit_pages = $permission['role']['edit_pages'];
-        $del_pages = $permission['role']['del_pages'];
-        $pages = Page::paginate(10);
-        return view('adminPage.page-list', ['pages' => $pages , 'edit_pages' => $edit_pages , 'del_pages' => $del_pages]);
+        $pIsLogin = Session::get('permissions');
+        $edit_pages = $pIsLogin['edit_pages'];
+        $del_pages = $pIsLogin['del_pages'];
+        if ($edit_pages == 1 or $del_pages == 1) {
+            if (Input::get('search')) {
+                $pages = Page::where('title' , 'like', '%' . Input::get('search') . '%' )
+                    ->orWhere('body' , 'like', '%' . Input::get('search') . '%' )
+                    ->sortable()->paginate(10);
+            }else{
+                $pages = Page::sortable()->paginate(10);
+            }
+            return view('adminPage.page-list', ['pages' => $pages, 'edit_pages' => $edit_pages, 'del_pages' => $del_pages]);
+        }else{
+            return view('403');
+        }
     }
     //Delete page
     public function deletePage(Page $page)
     {
-        $page->delete();
-        $msg = 'حذف با موفقیت انجام شد ';
-        return redirect()->back()->with(compact('msg'));
+        $pIsLogin = Session::get('permissions');
+        if (($pIsLogin['del_pages'] == 1) and ($page != null)) {
+            $page->delete();
+            $msg = 'حذف با موفقیت انجام شد ';
+            return redirect()->back()->with(compact('msg'));
+        }else{
+            return view('403');
+        }
     }
     //User List
     public function userList()
     {
-        if(Auth::user()->role->list_user == 1) {
-            $permission = $this->permissionsLoginUser();
-            $edit_user = $permission['role']['edit_user'];
-            $del_user = $permission['role']['del_user'];
-            $users = User::with('role')->paginate(10);
-            return view('adminPage.user-list', ['users' => $users, 'edit_user' => $edit_user, 'del_user' => $del_user]);
+        $pIsLogin = Session::get('permissions');
+        if ($pIsLogin['manage_user'] == 1){
+            if (Input::get('search')) {
+                $users = User::with('role')->where('fname' , 'like', '%' . Input::get('search') . '%' )
+                    ->orWhere('lname' , 'like', '%' . Input::get('search') . '%' )
+                    ->orWhere('national_code' , 'like', '%' . Input::get('search') . '%' )
+                    ->sortable()->paginate(10);
+            }else{
+                $users = User::with('role')->sortable()->paginate(10);
+            }
+            return view('adminPage.user-list', ['users' => $users]);
         }else{
             return view('403');
         }
+
     }
     //Active or deActive user
     public function statusUser(User $user)
@@ -219,41 +288,44 @@ class AdminController extends Controller
     //Remove User
     public function removeUser(User $user)
     {
-        $user->delete();
-        $msg = 'کاربر حذف شد' ;
-        return redirect()->back()->with(compact('msg'));
+        $pIsLogin = Session::get('permissions');
+        if ( ($pIsLogin['manage_user'] == 1) and ($user !=  null)) {
+            $user->delete();
+            $msg = 'کاربر حذف شد';
+            return redirect()->back()->with(compact('msg'));
+        }else{
+            return view('403');
+        }
     }
     //Show Add Update User
     public function user(User $user , Request $request)
     {
         $msg = '';
-        if(Auth::user()->role->create_user == 1) {
+        $pIsLogin = Session::get('permissions');
+        $id = Session::get('id');
             $roles = Role::pluck('role' , 'id');
             if ($request->isMethod('post')) {
                 $this->validate(request(),
                     [
-                        'fname' => 'required|max:30',
-                        'lname' => 'required|max:30',
-                        'phone' => 'required|max:11|min:11',
-                        'national_code' => 'required|max:10|min:10|unique:users',
-                        'username' => 'required',
+                        'fname' => 'required|max:30|persian_alpha',
+                        'lname' => 'required|max:30|persian_alpha',
+                        'phone' => 'required|max:11|min:11|iran_mobile',
+                        'national_code' => 'required|melli_code|max:10|min:10|unique:users,id,' . $id,
+                        'username' => 'required|is_not_persian',
                         'password' => 'required|confirmed'
                     ]);
                 if ($user->id) {
-                    $hashedPassword = Hash::make(request('password'));
                     $user->update([
                         'role_id' => $request->role,
                         'fname' => $request->fname,
                         'lname' => $request->lname,
                         'phone' => $request->phone,
                         'national_code' => $request->national_code,
-                        'username' => $request->username,
-                        'password' => $hashedPassword,
+                        'username' => $request->username
                     ]);
                     $msg = 'ویرایش با موفقیت انجام شد';
                 } else {
-
-                    $hashedPassword = Hash::make(request('password'));
+                    $hashedPassword =  Hash::make(request('password'));
                     User::create([
                         'role_id' => $request->role,
                         'fname' => $request->fname,
@@ -267,16 +339,20 @@ class AdminController extends Controller
                     $msg = 'کاربر جدید ایجاد شد';
                 }
             }
-                return view('adminPage.user' , ['roles' => $roles , 'user' => $user , 'msg' => $msg]);
-        }
-        else{
+        if ( ($pIsLogin['manage_user'] == 1) and ($user->id !=  null)) {
+            return view('adminPage.user', ['roles' => $roles, 'user' => $user, 'msg' => $msg]);
+        }elseif ( ($pIsLogin['create_user'] == 1) and ($user->id == null)){
+            return view('adminPage.user', ['roles' => $roles, 'user' => $user, 'msg' => $msg]);
+        }else{
             return view('403');
         }
+
     }
     //Show Promote Page
     public function promote()
     {
-        if(Auth::user()->role->promote_user == 1) {
+        $pIsLogin = Session::get('permissions');
+        if ($pIsLogin['promote_user'] == 1){
             $roles = Role::pluck('role', 'id');
             return view('adminPage.promote', ['roles' => $roles]);
         }else{
@@ -288,7 +364,7 @@ class AdminController extends Controller
     {
         $this->validate(request(),
             [
-                'role' => 'required|min:3|max:25',
+                'role' => 'required|min:3|max:25|persian_alpha',
             ]);
         Role::create(['role' => $_POST['role']]);
         $msg = 'گروه جدید ایجاد شد ';
@@ -299,26 +375,21 @@ class AdminController extends Controller
     {
         $this->validate(request(),
             [
-                'roleNew' => 'required|min:3|max:25',
+                'roleNew' => 'required|min:3|max:25|persian_alpha',
             ]);
         $role = Role::where('id' , $_POST['roleCopy'])->first();
         Role::create(['role' => $_POST['roleNew'],
                     'edit_posts'  => $role['edit_posts'],
                     'del_posts' => $role['del_posts'],
-                    'edit_publish_posts' => $role['edit_publish_posts'],
-                    'del_publish_posts' => $role['del_publish_posts'],
+                    'create_posts' => $role['create_posts'],
                     'edit_pages' => $role['edit_pages'],
                     'del_pages' => $role['del_pages'],
-                    'edit_publish_pages' => $role['edit_publish_pages'],
-                    'del_publish_pages' => $role['del_publish_pages'],
-                    'publish_posts' => $role['publish_posts'],
-                    'publish_pages' => $role['publish_pages'],
+                    'create_pages' => $role['create_pages'],
                     'manage_category' => $role['manage_category'],
                     'create_user' => $role['create_user'],
-                    'edit_user' => $role['edit_user'],
-                    'del_user' => $role['del_user'],
+                    'manage_user' => $role['manage_user'],
                     'promote_user' => $role['promote_user'],
-                    'list_user' => $role['list_user']
+                    'dashboard' => $role['dashboard']
             ]);
         $msg = 'عملیات کپی با موفقیت انجام شد ';
         return redirect()->back()->with(compact('msg'));
@@ -326,11 +397,10 @@ class AdminController extends Controller
     //Loading Role
     public function loadingRole(Request $request)
     {
-        if(Auth::user()->role->promote_user == 1) {
+        $pIsLogin = Session::get('permissions');
+        if ($pIsLogin['promote_user'] == 1) {
             $permission = Role::where('id', $request->role)->first();
             return view('adminPage.customize', ['permission' => $permission]);
-        }else{
-            return view('403');
         }
     }
     //Save Permission = Customize Role
@@ -338,38 +408,28 @@ class AdminController extends Controller
     {
         (! (isset($_POST['edit_posts']))? $_POST['edit_posts']=0 : $_POST['edit_posts']=1);
         (! (isset($_POST['del_posts']))? $_POST['del_posts']=0 : $_POST['del_posts']=1);
-        (! (isset($_POST['edit_publish_posts']))? $_POST['edit_publish_posts']=0 : $_POST['edit_publish_posts']=1);
-        (! (isset($_POST['del_publish_posts']))? $_POST['del_publish_posts']=0 : $_POST['del_publish_posts']=1);
+        (! (isset($_POST['create_posts']))? $_POST['create_posts']=0 : $_POST['create_posts']=1);
         (! (isset($_POST['edit_pages']))? $_POST['edit_pages']=0 : $_POST['edit_pages']=1);
         (! (isset($_POST['del_pages']))? $_POST['del_pages']=0 : $_POST['del_pages']=1);
-        (! (isset($_POST['edit_publish_pages']))? $_POST['edit_publish_pages']=0 : $_POST['edit_publish_pages']=1);
-        (! (isset($_POST['del_publish_pages']))? $_POST['del_publish_pages']=0 : $_POST['del_publish_pages']=1);
-        (! (isset($_POST['publish_posts']))? $_POST['publish_posts']=0 : $_POST['publish_posts']=1);
-        (! (isset($_POST['publish_pages']))? $_POST['publish_pages']=0 : $_POST['publish_pages']=1);
+        (! (isset($_POST['create_pages']))? $_POST['create_pages']=0 : $_POST['create_pages']=1);
         (! (isset($_POST['manage_category']))? $_POST['manage_category']=0 : $_POST['manage_category']=1);
         (! (isset($_POST['create_user']))? $_POST['create_user']=0 : $_POST['create_user']=1);
-        (! (isset($_POST['edit_user']))? $_POST['edit_user']=0 : $_POST['edit_user']=1);
-        (! (isset($_POST['del_user']))? $_POST['del_user']=0 : $_POST['del_user']=1);
+        (! (isset($_POST['manage_user']))? $_POST['manage_user']=0 : $_POST['manage_user']=1);
         (! (isset($_POST['promote_user']))? $_POST['promote_user']=0 : $_POST['promote_user']=1);
-        (! (isset($_POST['list_user']))? $_POST['list_user']=0 : $_POST['list_user']=1);
+        (! (isset($_POST['dashboard']))? $_POST['dashboard']=0 : $_POST['dashboard']=1);
         $role->update([
             'role' => $_POST['nameRole'],
             'edit_posts'  => $_POST['edit_posts'],
             'del_posts' => $_POST['del_posts'],
-            'edit_publish_posts' => $_POST['edit_publish_posts'],
-            'del_publish_posts' => $_POST['del_publish_posts'],
+            'create_posts' => $_POST['create_posts'],
             'edit_pages' => $_POST['edit_pages'],
             'del_pages' => $_POST['del_pages'],
-            'edit_publish_pages' => $_POST['edit_publish_pages'],
-            'del_publish_pages' => $_POST['del_publish_pages'],
-            'publish_posts' => $_POST['publish_posts'],
-            'publish_pages' => $_POST['publish_pages'],
+            'create_pages' => $_POST['create_pages'],
             'manage_category' => $_POST['manage_category'],
             'create_user' => $_POST['create_user'],
-            'edit_user' => $_POST['edit_user'],
-            'del_user' => $_POST['del_user'],
+            'manage_user' => $_POST['manage_user'],
             'promote_user' => $_POST['promote_user'],
-            'list_user' => $_POST['list_user']
+            'dashboard' => $_POST['dashboard']
         ]);
         $msg = 'تغییرات اعمال شد ';
         return redirect()->back()->with(compact('msg'));
@@ -379,10 +439,9 @@ class AdminController extends Controller
     {
             $msg = '';
             $path = '';
-            $id = \Session::get('id');
+            $id = Session::get('id');
             $profile = Profile::where('user_id' , $id)->first();
             if ($request->isMethod('post')) {
-
                 $this->validate($request, [
                     'avatar' => 'mimes:jpg,jpeg,png,bmp',
                 ]);
@@ -414,5 +473,26 @@ class AdminController extends Controller
                 $msg = 'عملیات با موفقیت انجام شد';
             }
         return view('adminPage.profile' , ['msg' => $msg , 'profile' => $profile]);
+    }
+
+    public function resetPass(Request $request)
+    {
+            $this->validate($request, [
+                'oldPass' => 'required',
+                'newPass' => 'required',
+                'newPassConfirmation' => 'required|same:newPass',
+            ]);
+            $id = Session::get('id');
+            $user = User::where('id' ,$id)->first();
+            $hashedPassword = $user->password;
+
+            if (Hash::check($request->oldPass, $hashedPassword)) {
+                $user->update(['password' => Hash::make($request->newPass)]);
+                $msg = 'ریست رمز عبور با موفقیت انجام شد';
+                return redirect()->back()->with(compact('msg'));
+            } else {
+                $msg = 'رمز عبور قبلی اشتباه است';
+                return redirect()->back()->with(compact('msg'));
+            }
     }
 }

@@ -4,10 +4,13 @@ namespace App;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Kyslik\ColumnSortable\Sortable;
 
 class User extends Authenticatable
 {
     use Notifiable;
+    use Sortable;
+    public $sortable = [ 'fname', 'lname', 'national_code' , 'username' , 'role'];
 
     /**
      * The attributes that are mass assignable.

@@ -1,5 +1,5 @@
 @extends('layout.adminLayout')
-@section('title' , 'ایجاد کاربر')
+@section('title' , ' کاربر')
 @section('content')
     <div class="row">
         <div class="col-md-12">
@@ -17,13 +17,13 @@
                     {{ Form::token() }}
                         <div class="form-group">
                             {{ Form::label('role', 'گروه') }}
-                            {{ Form::select('role' , $roles , null ,['class' => 'form-control'])  }}
+                            {{ Form::select('role' , $roles , ($user)? $user->role_id : null ,['class' => 'form-control'])  }}
                         </div>
 
                         @if ($errors->has('fname'))
                             <span class="help-block error">
                                 {{ $errors->first('fname') }}
-                                </span>
+                            </span>
                         @endif
                         <div class="form-group">
                             {{ Form::label('fname', 'نام') }}
@@ -34,7 +34,7 @@
                         @if ($errors->has('lname'))
                             <span class="help-block error">
                                 {{ $errors->first('lname') }}
-                                </span>
+                            </span>
                         @endif
                         <div class="form-group">
                             {{ Form::label('lname', 'نام خانوادگی') }}
@@ -71,18 +71,19 @@
                             {{ Form::label('username', 'نام کاربری') }}
                             {{ Form::text('username', ($user)? $user->username : ''  , ['class' => 'form-control' , 'id' => 'username']) }}
                         </div>
-
-                        @if ($errors->has('password'))
-                            <span class="help-block error">
-                                {{ $errors->first('password') }}
-                            </span>
-                        @endif
-                        <div class="form-group">
-                            {{ Form::label('password', 'کلمه عبور') }}
-                            {{ Form::password('password' , ['class' => 'form-control']) }}
-                            <br>
-                            {{ Form::password('password_confirmation' , ['class' => 'form-control']) }}
-                        </div>
+                            @if ($errors->has('password'))
+                                <span class="help-block error">
+                                    {{ $errors->first('password') }}
+                                </span>
+                            @endif
+                            <div class="form-group">
+                                {{ Form::label('password', 'کلمه عبور') }}
+                                {{ Form::password('password' ,  ['class' => 'form-control' , 'id' => 'password'  ]) }}
+                                <br>
+                                {{ Form::label('password_confirmation', 'تکرار کلمه عبور') }}
+                                {{ Form::password('password_confirmation' , ['class' => 'form-control' , 'id' => 'password_confirmation']) }}
+                            </div>
+                            <span id='confirmation'></span>
 
                         <div class="box-footer">
                             {{ Form::submit('ارسال', ['class' => 'btn btn-primary' , 'name' => 'submit']) }}
@@ -229,7 +230,15 @@
                     e.preventDefault();
                 }
             });
+
+            $('#password, #password_confirmation').on('keyup', function () {
+                if ($('#password').val() == $('#password_confirmation').val()) {
+                    $('#confirmation').html('فیلدهای کلمه عبور یکسان هستند').css('color', 'green');
+                } else
+                    $('#confirmation').html('فیلد های کلمه عبور یکسان نیستند').css('color', 'red');
+            });
         });
+
 
     </script>
 

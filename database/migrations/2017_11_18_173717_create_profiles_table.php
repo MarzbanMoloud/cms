@@ -17,12 +17,12 @@ class CreateProfilesTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned()->index();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
-            $table->string('job');
-            $table->string('education');
-            $table->string('mail');
-            $table->string('address');
-            $table->string('avatar');
-            $table->text('detail');
+            $table->string('job')->nullable();
+            $table->string('education')->nullable();
+            $table->string('mail')->nullable();
+            $table->string('address')->nullable();
+            $table->string('avatar')->nullable();
+            $table->text('detail')->nullable();
             $table->timestamps();
         });
     }
